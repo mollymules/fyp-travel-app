@@ -1,0 +1,14 @@
+<html>
+  	<body>
+  		<h1>Diseases Coverage</h1>
+  		<br/>
+  		<h4>{{ user }}</h4> is protected against:
+  		<br/>
+  		<ul>
+    		{% for disease in diseases %}
+    		<li> disease.diseaseID</li>
+    		{% endfor %}
+  		</ul>
+  		<a href="{{ url }}">{{ url_linktext }}</a>
+  	</body>
+</html>

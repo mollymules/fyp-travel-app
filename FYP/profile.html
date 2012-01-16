@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>My Itinerary</title>
+	<meta name="viewport" content="user-scalable=no, width=device-width height=device-height" />
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.css" />
+	<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.js"></script>
+</head>
+<body>
+	<div data-role="page" id="profilePage" >
+        <script type="text/javascript">
+            $("#profilePage").live('pageinit', function() {
+            	$.getJSON('/json/me',
+            			function(data) {
+            				//Create details div
+            				var personContainer = $('<div class="person">');
+            				personContainer.append('<h4>Name: </h4><h5>' + data.name+ '</h5>');
+            				personContainer.append('<h4>DOB: </h4><h5>' + data.dob+ '</h5>');
+            				personContainer.append('<h4>Clinic: </h4><h5>' + data.clinic+ '</h5>');
+            				personContainer.append('<h4>Email: </h4><h5>' + data.email+ '</h5><br/>');
+            				//Add newsContainer to DOM
+            				$("#details").replaceWith(personContainer);
+            				console.log(personContainer);
+            	});
+            });
+        </script>
+        
+		<div data-role="header">
+			<h4>My Details</h4>
+		</div>
+		<div data-role="content">
+			<div id="details"></div>
+		</div>
+		<div data-role="footer">
+			<h4>Clinic Communication</h4>
+		</div>
+	</div>
+</body>
+</html>

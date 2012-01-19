@@ -1,2 +1,3 @@
 Problem: couldn't get stuff from DS with key, had to use __key__
 Problem: jQuery mobile not rendering when content is dynamically loaded. 
+Lesson: every link uses an AJAX call to retrieve the contents of the page<div>, the head never gets run, only once at start.

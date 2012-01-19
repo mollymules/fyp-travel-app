@@ -71,7 +71,7 @@ class JSONMeHandler(webapp.RequestHandler):
 VacList = []
 class JSONVacHandler(webapp.RequestHandler):
     def get(self):
-        vaccine = db.GqlQuery("SELECT * FROM VaccineTaken WHERE patient = :user ORDER BY dateExpired DESC",
+        vaccine = db.GqlQuery("SELECT * FROM VaccineTaken WHERE patient = :user ORDER BY dateExpired ASC",
                                user = users.get_current_user())
         response = self.makeJSON(vaccine)
         self.response.out.write(json.dumps(response))

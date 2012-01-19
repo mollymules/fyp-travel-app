@@ -11,15 +11,11 @@ class User(db.Model):
     dob = db.DateTimeProperty()
     name = db.StringProperty()
     clinic = db.ReferenceProperty(Clinic)
-    gender = db.BooleanProperty();
     
-    def getGender(self):
-        if(self.gender == true): 
-            return "male"
-        else:
-             return "female"
+class Disease(db.Model):
+    disease = db.StringProperty()
+    country = db.ListProperty(db.GeoPt)
     
-
 class Vaccine(db.Model):
     """"Models an individual vaccine"""
     vaccine = db.StringProperty()
@@ -35,10 +31,3 @@ class VaccineTaken(db.Model):
   dateGiven = db.DateTimeProperty()
   dateExpired = db.DateTimeProperty()
 
-
-class Disease(db.Model):
-    diseaseID = db.StringProperty()
-    vaccines = db.ListProperty(db.Key)
-    
-    def diseases(self):
-        return Vaccine.gql("WHERE disease = :1", self.key())

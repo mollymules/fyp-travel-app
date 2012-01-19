@@ -1,69 +1,46 @@
+<!DOCTYPE HTML>
 <html>
+
 <head>
 	<title>Yellow Book</title>
 	<meta name="viewport" content="user-scalable=no, width=device-width height=device-height" />
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.css" />
 	<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.js"></script>
-	<script type="text/javascript">
-		$(document).ready(start);
-		function start() {
-			$.getJSON('/json/vaccines',
-				function(data) {
-					for ( var i = 0; i < vaccines.VaccineTaken.length; i++) {
-						vacContainer.append('<div data-role="collapsible" data-theme="a" data-content-theme="a"><h3>'
-												+ vaccines.VaccineTaken[i].vaccine
-												+ '</h3><p><h4>Date Given: </h4><h5>'
-												+ vaccines.VaccineTaken[i].dateGiven
-												+ '</h5><h4>Date Expired: </h4><h5>'
-												+ vaccines.VaccineTaken[i].dateExpired
-												+ '</h5></p></div>)');
-							}
-							//Add newsContainer to DOM
-						$('#vacList').append(vacContainer);
-						console.log(vacContainer);
-				}
-			);
-	}
-</script>
 </head>
+
 <body>
-	<div data-role="page">
+	<div data-role="page" id="vaccPage" >
+        <script type="text/javascript">
+            $("#vaccPage").live('pageinit', function() {
+            	$.getJSON('/json/vaccines',
+            			function(data) {
+            			var vacContainer = $('<div data-role="collapsible-set">');
+						for ( var i = 0; i < data.length; i++) {
+            				vacContainer.append('<div data-role="collapsible"div data-role="collapsible">'
+            				+'<h3>'+ data[i].vaccine
+							+ '</h3><h4>Date Given: '+ data[i].dateGiven
+							+ '</h4><h4>Date Expired: '+ data[i].dateExpired
+							+ '</h4></div>');
+						}
+						vacContainer.append('<\div>')
+            			$("#vacList").replaceWith(vacContainer);
+            	});
+            });
+        </script>
+        
 		<div data-role="header">
 			<h4>Yellow Book</h4>
 		</div>
 		<div data-role="content">
-			<ul id="vacList" data-role="listview" class="ui-listview"></ul>
+		    <div data-role="collapsible-set" id="vacList"></div>
 			<a href="/disease_list" data-role="button">Disease Coverage</a>
 		</div>
 		<div data-role="footer">
 			<h4>Clinic Communication</h4>
 		</div>
 	</div>
+	
 
-
-	<!---  
-  <h1>The Yellow Book</h1>
-  <br/>
-  <h4>{{ user }}</h4> has taken:
-  <br/>
-  <table border="1">
-	<tr>
-		<th>Vaccine</th>
-		<th>Taken</th>
-		<th>Expired</th>
-	</tr>
-    {% for VaccineTaken in vaccines %}
-    <tr>
-		<td>{{ VaccineTaken.vaccineID }}</td>
-		<td>{{ VaccineTaken.dateGiven }}</td>
-		<td>{{ VaccineTaken.dateExpired }}</td>
-	</tr>
-    {% endfor %}
-</table>
-    <a href="{{ url }}">{{ url_linktext }}</a>
-    <br/>
-     <a href="/diseaseList.html"">See what disease you're covered against!'</a>
---->
 </body>
 </html>

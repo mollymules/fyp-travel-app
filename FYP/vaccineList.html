@@ -15,7 +15,9 @@
             $("#vaccPage").live('pageinit', function() {
             	$.getJSON('/json/vaccines',
             			function(data) {
-            			var vacContainer = $('<div data-role="collapsible-set">');
+            		var vacContainer = "";
+            		while(vacContainer.indexOf("Date Given") == -1){
+            			vacContainer = $('<div data-role="collapsible-set">');
 						for ( var i = 0; i < data.length; i++) {
             				vacContainer.append('<div data-role="collapsible"div data-role="collapsible">'
             				+'<h3>'+ data[i].vaccine
@@ -24,7 +26,7 @@
 							+ '</h4></div>');
 						}
 						vacContainer.append('<\div>')
-            			$("#vacList").replaceWith(vacContainer);
+            			$("#vacList").append(vacContainer).trigger("create");}
             	});
             });
         </script>

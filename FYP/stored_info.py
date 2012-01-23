@@ -14,7 +14,7 @@ class User(db.Model):
     
 class Disease(db.Model):
     disease = db.StringProperty()
-    country = db.ListProperty(db.GeoPt)
+    country = db.StringListProperty()
     
 class Vaccine(db.Model):
     """"Models an individual vaccine"""

@@ -50,6 +50,11 @@ class DiseaseList(webapp.RequestHandler):
         path = os.path.join(os.path.dirname(__file__), 'diseaseList.html')
         self.response.out.write(template.render(path, template_values))
         
+class DiseaseMap(webapp.RequestHandler):
+    def get(self):
+        template_values = {}
+        path = os.path.join(os.path.dirname(__file__), 'diseaseMap.html')
+        self.response.out.write(template.render(path, template_values))
 
 class JSONMeHandler(webapp.RequestHandler):
     def get(self):
@@ -108,7 +113,13 @@ class JSONDisease (webapp.RequestHandler):
             jsonReady.append(response[dis].disease)
         jsonReady = list(set(jsonReady))
         return jsonReady
-
+    
+class JSONMap (webapp.RequestHandler):
+    def get(self):
+        vaccine = db.GqlQuery("SELECT * FROM Disease WHERE disease = :1", dis)
+        response = self.makeJSON(vaccine)
+        self.response.out.write(json.dumps(response))
+        
 class Populate(webapp.RequestHandler):
     def get(self):
         self.generate()
@@ -142,6 +153,8 @@ application = webapp.WSGIApplication([
   ('/profile', Profile),
   ('/vaccine_list', VaccineList),
   ('/disease_list', DiseaseList),
+  ('/disease_map', DiseaseMap),
+  ('/json/map', JSONMap),
   ('/json/me', JSONMeHandler),
   ('/json/vaccines', JSONVacHandler),
   ('/json/diseases', JSONDisease)

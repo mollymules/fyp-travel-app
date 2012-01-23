@@ -7,34 +7,33 @@
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.css" />
 	<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.js"></script>
+	<script type='text/javascript' src='https://www.google.com/jsapi'></script>
 </head>
 
 <body>
 	<div data-role="page" id="disPage" >
 		<script type="text/javascript">
-			$( document ).delegate("#disPage", "pagebeforecreate", function() {
-				$.getJSON('/json/diseases', function(data) {
-					var disContainer = "";
-					while(disContainer.indexOf("a") == -1){
-						disContainer = $('<div id="disList">');
-						for ( var i = 0; i < data.length; i++) {
-							disContainer.append('<a href="/profile" data-role="button">'+ data[i]+ '</a>');
-						}
-						disContainer.append('<\div>');
-						$("#disList").append(disContainer).trigger("create");}
+			$("#disPage").bind('pageinit', function() {
+				$.getJSON('/json/diseases',function(data) {
+					var disContainer = $('<div id="disList">');
+					for ( var i = 0; i < data.length; i++) {
+						disContainer.append('<a href="/disease_map" data-role="button">'+ data[i]+ '</a>');
+					}
+					disContainer.append('<\div>');
+					$("#disList").append(disContainer).trigger("create");
 				});
 			});
 		</script>
 
 		<div data-role="header">
-			<h4>Yellow Book</h4>
+			<h4>Disease Protection</h4>
 		</div>
 		
 		<div data-role="content">
 			<ul id="disList" data-role="listview" class="ui-listview"></ul>
 		</div>
 		
-		<div data-role="footer">
+		<div data-role="footer" data-position="fixed">
 			<h4>Clinic Communication</h4>
 		</div>
 		

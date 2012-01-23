@@ -14,4 +14,9 @@ indexes:
   properties:
   - name: patient
   - name: dateExpired
+
+- kind: VaccineTaken
+  properties:
+  - name: patient
+  - name: dateExpired
     direction: desc

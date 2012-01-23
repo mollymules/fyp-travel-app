@@ -7,30 +7,28 @@
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.css" />
 	<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.js"></script>
+	<script type='text/javascript' src='https://www.google.com/jsapi'></script>
 </head>
 
 <body>
 	<div data-role="page" id="vaccPage" >
-        <script type="text/javascript">
-            $("#vaccPage").live('pageinit', function() {
-            	$.getJSON('/json/vaccines',
-            			function(data) {
-            		var vacContainer = "";
-            		while(vacContainer.indexOf("Date Given") == -1){
-            			vacContainer = $('<div data-role="collapsible-set">');
-						for ( var i = 0; i < data.length; i++) {
-            				vacContainer.append('<div data-role="collapsible"div data-role="collapsible">'
-            				+'<h3>'+ data[i].vaccine
-							+ '</h3><h4>Date Given: '+ data[i].dateGiven
-							+ '</h4><h4>Date Expired: '+ data[i].dateExpired
-							+ '</h4></div>');
-						}
-						vacContainer.append('<\div>')
-            			$("#vacList").append(vacContainer).trigger("create");}
-            	});
-            });
-        </script>
-        
+		<script type="text/javascript">
+			$("#vaccPage").bind('pageinit', function() {
+				$.getJSON('/json/vaccines', function(data) {
+					var vacContainer = $('<div data-role="collapsible-set">');
+					for ( var i = 0; i < data.length; i++) {
+						vacContainer.append('<div data-role="collapsible"div data-role="collapsible">'
+						+'<h3>'+ data[i].vaccine
+						+ '</h3><h4>Date Given: '+ data[i].dateGiven
+						+ '</h4><h4>Date Expired: '+ data[i].dateExpired
+						+ '</h4></div>');
+					}
+					vacContainer.append('<\div>')
+					$("#vacList").append(vacContainer).trigger("create");
+				});
+			});
+		</script>
+
 		<div data-role="header">
 			<h4>Yellow Book</h4>
 		</div>
@@ -38,7 +36,7 @@
 		    <div data-role="collapsible-set" id="vacList"></div>
 			<a href="/disease_list" data-role="button">Disease Coverage</a>
 		</div>
-		<div data-role="footer">
+		<div data-role="footer" data-position="fixed">
 			<h4>Clinic Communication</h4>
 		</div>
 	</div>

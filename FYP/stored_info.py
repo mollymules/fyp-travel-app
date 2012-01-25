@@ -10,6 +10,7 @@ class User(db.Model):
     userID = db.UserProperty()
     dob = db.DateTimeProperty()
     name = db.StringProperty()
+    home = db.StringProperty()
     clinic = db.ReferenceProperty(Clinic)
     
 class Disease(db.Model):

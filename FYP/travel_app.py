@@ -24,12 +24,9 @@ class MainPage(webapp.RequestHandler):
         else:
             url = users.create_login_url(self.request.uri)
             url_linktext = 'Login'
+            self.Populate()
             
-        template_values = {
-            'user': user,
-            'url': url,
-            'url_linktext': url_linktext,
-        }
+        template_values = {}
         path = os.path.join(os.path.dirname(__file__), 'index.html')
         self.response.out.write(template.render(path, template_values))
         
@@ -116,29 +113,75 @@ class JSONDisease (webapp.RequestHandler):
     
 class JSONMap (webapp.RequestHandler):
     def get(self):
-        vaccine = db.GqlQuery("SELECT * FROM Disease WHERE disease = :1", dis)
-        response = self.makeJSON(vaccine)
-        self.response.out.write(json.dumps(response))
+        dis = self.request.get('disease')
+        disease = db.GqlQuery("SELECT * FROM Disease WHERE disease = :1", dis)
+        logging.info("RETURNED FROM STORE")
+        logging.info(str(disease[0].country))
+        self.response.out.write(json.dumps(disease[0].country))
+        
+    def makeJSON(self, response):
+        jsonReady = []
+        for dis in range(0,len(response[0].country)):
+            jsonReady.append(response[0][dis])
+        jsonReady = list(set(jsonReady))
+        return jsonReady
         
 class Populate(webapp.RequestHandler):
     def get(self):
-        self.generate()
+        user = users.get_current_user()
+        logging.info(user)
+        if(user == 'test@example.com'):
+            self.generate()
+        else: 
+            self.generateRand()
         
     def generate(self):
-        disease1 = Disease(disease= "Malaria")
-        disease2 = Disease(disease= "River Blindness")
+        disease1 = Disease(disease= "Malaria", country=["IN","AF","LA","TH","KH","PG","VN","SD"])
+        disease2 = Disease(disease= "Tetnus", country=["PK","AF","LA","SO","TD","NE","ML","CD"])
+        disease3 = Disease(disease= "Yellow Fever", country=["PE","VE","EC","SN","LR","NG","CM","GA"])
+        disease4 = Disease(disease= "Poliomyelitis", country=["BR","PE","VE","AR","MR","NE","NG","ML"])
         disease1.put()
         disease2.put()
+        disease3.put()
+        disease4.put()
        
-        clin = Clinic(address="Westmorland Street, Dublin 2")
+        clin = Clinic(address="Henry Street, Dublin 1")
         clin.put()
 
         user = User(name="Mary Seery", userID=users.get_current_user(), dob=datetime.datetime(1990, 8, 17, 0, 0, 0), clinic=clin)
         user.put()
         
-        drugs = ["Malarone", "Chloroquine", "Doxycycline", "Mefloquine", "Primaquine"]
+        drugs = ["Malarone", "Chloroquine", "Doxycycline", "Mefloquine"]
         for n in range(len(drugs)):
-            vac = Vaccine(vaccine=drugs[n], diseases=[disease1.key(), disease2.key()])
+            vac = Vaccine(vaccine=drugs[n], diseases=[disease1.key(), disease2.key(), disease3.key(), disease4.key()])
+            vac.put()
+            vacTaken = VaccineTaken(patient=users.get_current_user(),
+                    dateGiven=datetime.datetime(random.randint(2000, 2008), 8, 4, 12, 30, 45),
+                    dateExpired=datetime.datetime(random.randint(2009, 2016), 8, 4, 12, 30, 45),
+                    vaccine=vac)              
+            vacTaken.put() 
+            
+    def generateRand(self):
+        disease1 = Disease(disease= "Malaria", country=["IN","AF","LA","TH","KH","PG","VN","SD"])
+        disease2 = Disease(disease= "Tetnus", country=["PK","AF","LA","SO","TD","NE","ML","CD"])
+        disease3 = Disease(disease= "Hepatitis A", country=["RU","AF","LA","TH","PK","SA","YE","SY"])
+        disease4 = Disease(disease= "Typhoid", country=["ID","MY","NP","IN","PH","PK","IR","AF"])
+        disease1.put()
+        disease2.put()
+        disease3.put()
+        disease4.put()
+       
+        clin = Clinic(address="Westmorland Street, Dublin 2")
+        clin.put()
+
+        user = User(name="Frances Doe", userID=users.get_current_user(), 
+                    dob=datetime.datetime(random.randint(1960, 1990),random.randint(1, 12), random.randint(1, 28), 0, 0, 0),
+                     clinic=clin, home='Ireland')
+        user.put()
+        
+        drugs = ["Malarone", "TDaP", "Harix", "Vivotif Berna"]
+        for n in range(len(drugs)):
+            vac = Vaccine(vaccine=drugs[n], diseases=[disease1.key(), disease2.key(), disease4.key(), disease3.key()])
             vac.put()
             vacTaken = VaccineTaken(patient=users.get_current_user(),
                     dateGiven=datetime.datetime(random.randint(2000, 2008), 8, 4, 12, 30, 45),

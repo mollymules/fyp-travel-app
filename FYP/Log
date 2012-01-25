@@ -6,3 +6,8 @@ Problem: Everytime page was added, kept appending the same content repeatedly
 Solution: Surround with while loop to check if content has already been added. Didnt work 
 $("#disPage").live('pageinit', function(): change live to bind
 Lesson: every link uses an AJAX call to retrieve the contents of the page<div>, the head never gets run, only once at start.
+
+Tasks:	+ prefetech all pages so transitions are fast: app caching
+		+ use local storage between pages
+		
+			

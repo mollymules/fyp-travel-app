@@ -24,7 +24,7 @@ class MainPage(webapp.RequestHandler):
         else:
             url = users.create_login_url(self.request.uri)
             url_linktext = 'Login'
-            self.Populate()
+            self.Populate(user)
             
         template_values = {}
         path = os.path.join(os.path.dirname(__file__), 'index.html')
@@ -127,13 +127,16 @@ class JSONMap (webapp.RequestHandler):
         return jsonReady
         
 class Populate(webapp.RequestHandler):
+            
     def get(self):
-        user = users.get_current_user()
+        user = Populate.user
         logging.info(user)
         if(user == 'test@example.com'):
-            self.generate()
+            """self.generate()"""
+            logging.info("This is the test user")
         else: 
-            self.generateRand()
+            logging.info("This is a real user")
+            """self.generateRand()"""
         
     def generate(self):
         disease1 = Disease(disease= "Malaria", country=["IN","AF","LA","TH","KH","PG","VN","SD"])

@@ -17,15 +17,6 @@ from stored_info import *
 class MainPage(webapp.RequestHandler):
     def get(self):
         Populate()
-        user = users.get_current_user()
-        if user:
-            url = users.create_logout_url(self.request.uri)
-            url_linktext = 'Logout'
-        else:
-            url = users.create_login_url(self.request.uri)
-            url_linktext = 'Login'
-            self.Populate(user)
-            
         template_values = {}
         path = os.path.join(os.path.dirname(__file__), 'index.html')
         self.response.out.write(template.render(path, template_values))
@@ -126,17 +117,21 @@ class JSONMap (webapp.RequestHandler):
         jsonReady = list(set(jsonReady))
         return jsonReady
         
-class Populate(webapp.RequestHandler):
-            
-    def get(self):
-        user = Populate.user
-        logging.info(user)
-        if(user == 'test@example.com'):
-            """self.generate()"""
-            logging.info("This is the test user")
-        else: 
-            logging.info("This is a real user")
-            """self.generateRand()"""
+class Populate():
+    def __init__(self):
+        logging.info("IN POPULATE")
+        user = users.get_current_user()
+        results = db.GqlQuery("SELECT * FROM User WHERE userID = :1", users.get_current_user()).get()
+        if(results):
+            logging.info("USER HAS LOGGED IN BEFORE")
+        else:
+            logging.info("NEW USER" + user.nickname())
+            if(user == 'test@example.com'):
+                self.generate()
+                logging.info("This is the test user")
+            else: 
+                logging.info("This is a real user")
+                self.generateRand()
         
     def generate(self):
         disease1 = Disease(disease= "Malaria", country=["IN","AF","LA","TH","KH","PG","VN","SD"])
@@ -177,7 +172,7 @@ class Populate(webapp.RequestHandler):
         clin = Clinic(address="Westmorland Street, Dublin 2")
         clin.put()
 
-        user = User(name="Frances Doe", userID=users.get_current_user(), 
+        user = User(name=users.get_current_user().nickname(), userID=users.get_current_user(), 
                     dob=datetime.datetime(random.randint(1960, 1990),random.randint(1, 12), random.randint(1, 28), 0, 0, 0),
                      clinic=clin, home='Ireland')
         user.put()

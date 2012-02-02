@@ -6,13 +6,25 @@ Problem: Everytime page was added, kept appending the same content repeatedly
 Solution: Surround with while loop to check if content has already been added. Didnt work 
 $("#disPage").live('pageinit', function(): change live to bind
 Lesson: every link uses an AJAX call to retrieve the contents of the page<div>, the head never gets run, only once at start.
+
 TASK: For getting disease on map: 	+ find API: Google charts
 									+ get basic static working
 									+ add data to data store
 									+ get data from data store to page via JSON
 									+ get the data into the url
 									+ put the url into the img tag
-									Problem:
+									Problem: wouldn't format tag properly
+									
+TASK: Simulation Tool: 				+ design session back end
+									+ get information for people and places
+									+create only one instance of diseases and vaccine names
+									+create multiple vaccineTaken and session instances.
+									
+									
+Problem: couldn't update to SVN, needed to clean, couldn't clean due to error.
+Solution: disconnect from SVN.
+Problem: was using urllib to fetch results however gave warning about the word host
+Solution: switched to urlfetch as it doesn't distcriminate against host word
 
 Tasks:	+ prefetech all pages so transitions are fast: app caching
 		+ use local storage between pages

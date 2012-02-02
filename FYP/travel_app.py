@@ -1,6 +1,6 @@
 import cgi
 import datetime
-import urllib
+import urllib2
 import wsgiref.handlers
 import os
 import random
@@ -11,16 +11,70 @@ from google.appengine.ext.webapp import template
 from google.appengine.ext import db
 from google.appengine.api import users
 from google.appengine.ext import webapp
+from google.appengine.api import memcache
+from google.appengine.api import urlfetch
 from google.appengine.ext.webapp.util import run_wsgi_app
 from stored_info import *
 
 class MainPage(webapp.RequestHandler):
     def get(self):
         Populate()
+        user = users.get_current_user()
+        self.setUserSession(user)
+        self.collectUserSessions()
         template_values = {}
         path = os.path.join(os.path.dirname(__file__), 'index.html')
         self.response.out.write(template.render(path, template_values))
         
+    def setUserSession(self, user):
+        date = datetime.datetime.today()
+        user_session = memcache.get("UserSession%s" % user.nickname())
+        if user_session is not None:
+            logging.info("A SESSION EXIST FOR PERSON")
+            user_session = user_session.split(",")
+            memcache.replace("UserSession%s" % user.nickname(),"%s,%s" %(user_session[0],date.strftime("%Y-%m-%d %H:%M:%S")))
+        else:
+            logging.info("A SESSION DOESN'T EXIST FOR PERSON")
+            memcache.set("UserSession%s" % user.nickname(),"%s,%s" %(date.strftime("%Y-%m-%d %H:%M:%S"), date.strftime("%Y-%m-%d %H:%M:%S")))
+            profile = db.GqlQuery("SELECT * FROM User WHERE userID = :1", users.get_current_user()).get()
+            profile.lastSession = date
+            profile.isActive = True
+            profile.put()
+    
+    def collectUserSessions(self):
+        active_users = db.GqlQuery("SELECT * FROM User WHERE isActive = :1", True)
+        for u in active_users:
+            session = memcache.get("UserSession%s" % u.name)
+            logging.info("PEOPLE ARE ACTIVE")
+            logging.info(session)
+            if session:
+                session = session.split(',')
+                last_active = datetime.datetime.strptime(session[1], '%Y-%m-%d %H:%M:%S') #parses string into datetime object
+                logging.info("THE SESSION in COLLECT")
+                logging.info(last_active)
+                if datetime.datetime.today() - datetime.timedelta(minutes=3) > last_active:
+                    IPAdd = self.request.remote_addr
+                    #how to use an API call in Python:
+                    url = 'http://api.hostip.info/get_html.php?ip=%s' % IPAdd
+                    result = urlfetch.fetch(url, method='GET')
+                    logging.info("GETTING COUTRY")
+                    result = result.content.split("(")
+                    result = result[1].split(")")
+                    logging.info(result[0])
+                    record = Sessions()
+                    record.userID = u.userID
+                    record.sessionStart = datetime.datetime.strptime(session[0], '%Y-%m-%d %H:%M:%S')         
+                    record.sessionEnd = last_active
+                    record.country = str(result[0])
+                    record.put()
+                    memcache.delete("UserSession%s" % u.name)
+                    u.lastSession = last_active
+                    u.isActive = False
+                    u.put()
+            else:
+                u.isActive = True
+                u.put()
+
 class Profile(webapp.RequestHandler):
     def get(self):
         path = os.path.join(os.path.dirname(__file__), 'profile.html')
@@ -126,7 +180,7 @@ class Populate():
             logging.info("USER HAS LOGGED IN BEFORE")
         else:
             logging.info("NEW USER" + user.nickname())
-            if(user == 'test@example.com'):
+            if(user.email() == "test@example.com" or user.email() == "maryseery20@gmail.com"):
                 self.generate()
                 logging.info("This is the test user")
             else: 
@@ -146,7 +200,8 @@ class Populate():
         clin = Clinic(address="Henry Street, Dublin 1")
         clin.put()
 
-        user = User(name="Mary Seery", userID=users.get_current_user(), dob=datetime.datetime(1990, 8, 17, 0, 0, 0), clinic=clin)
+        user = User(name=users.get_current_user().nickname(), userID=users.get_current_user(), dob=datetime.datetime(1990, 8, 17, 0, 0, 0), 
+                    clinic=clin, firstSession=datetime.datetime.today(), home='Ireland', lastSession= datetime.datetime.today(), isActive= True)
         user.put()
         
         drugs = ["Malarone", "Chloroquine", "Doxycycline", "Mefloquine"]
@@ -174,7 +229,7 @@ class Populate():
 
         user = User(name=users.get_current_user().nickname(), userID=users.get_current_user(), 
                     dob=datetime.datetime(random.randint(1960, 1990),random.randint(1, 12), random.randint(1, 28), 0, 0, 0),
-                     clinic=clin, home='Ireland')
+                     clinic=clin, home='Ireland',  firstSession= datetime.datetime.today(), lastSession= datetime.datetime.today(), isActive = True)
         user.put()
         
         drugs = ["Malarone", "TDaP", "Harix", "Vivotif Berna"]

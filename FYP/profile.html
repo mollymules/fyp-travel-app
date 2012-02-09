@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.css" />
 	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.js"></script>
-	<script type='text/javascript' src='https://www.google.com/jsapi'></script>
+	<link rel="stylesheet" type="text/css" href="Stylesheets/main.css" />
 </head>
 
 <body>
@@ -17,23 +17,30 @@
             	$.getJSON('/json/me',
             			function(data) {
             				//Create details div
-            				var personContainer = $('<div class="person">');
-            				personContainer.append('<h4>Name: </h4><h5>' + data.name+ '</h5>');
-            				personContainer.append('<h4>DOB: </h4><h5>' + data.dob+ '</h5>');
-            				personContainer.append('<h4>Clinic: </h4><h5>' + data.clinic+ '</h5>');
-            				personContainer.append('<h4>Email: </h4><h5>' + data.email+ '</h5><br/>');
-            				//Add newsContainer to DOM
+            				var personContainer = $('<fieldset class="ui-grid-b">');
+            				personContainer.append('<div class="ui-block-a"><h6>Name: </h6><h6>DOB: </h6><h6>Clinic: </h6></div>'); 
+            				personContainer.append('<div class="ui-block-b"><h6>' + data.name+ '</h6><h6>' + data.dob+ '</h6><h6>' + data.clinic+ '</h6></div>');
+            				personContainer.append('</fieldset>');
+            				var location = '<img src=\'http://chart.apis.google.com/chart?cht=map&chs=140x160&chld='+data.country+'&chco=909090|FF4040&chtt=Where+You+Are:\'>';
+            				if(data.country=="Private Address"){
+            					location = '<img src=\'http://chart.apis.google.com/chart?cht=map&chs=140x160&chld=IE&chco=909090|FF4040&chtt=Where+You+Are:\'>';
+            				}
             				$("#details").replaceWith(personContainer);
-            				console.log(personContainer);
+            				$("#map").append(location).trigger("create");
             	});
             });
         </script>
-        
 		<div data-role="header">
 			<h4>My Details</h4>
+			<div class="ui-btn-left">
+				<a href="/">
+					<img src="images/3Strata_Icon.png" height= "30px" width= "30px"/>
+				</a>
+			</div>
 		</div>
 		<div data-role="content">
 			<div id="details"></div>
+			<div id="map" style="text-align:center;"></div>
 		</div>
 		<div data-role="footer" data-position="fixed">
 			<h4>Clinic Communication</h4>

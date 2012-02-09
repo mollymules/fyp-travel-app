@@ -6,6 +6,7 @@ import os
 import random
 import logging
 import simplejson as json
+import simulator
 
 from google.appengine.ext.webapp import template
 from google.appengine.ext import db
@@ -29,13 +30,14 @@ class MainPage(webapp.RequestHandler):
     def setUserSession(self, user):
         date = datetime.datetime.today()
         user_session = memcache.get("UserSession%s" % user.nickname())
+        IPAdd = self.request.remote_addr
         if user_session is not None:
             logging.info("A SESSION EXIST FOR PERSON")
             user_session = user_session.split(",")
-            memcache.replace("UserSession%s" % user.nickname(),"%s,%s" %(user_session[0],date.strftime("%Y-%m-%d %H:%M:%S")))
+            memcache.replace("UserSession%s" % user.nickname(),"%s,%s,%s" %(user_session[0],date.strftime("%Y-%m-%d %H:%M:%S"),IPAdd))
         else:
             logging.info("A SESSION DOESN'T EXIST FOR PERSON")
-            memcache.set("UserSession%s" % user.nickname(),"%s,%s" %(date.strftime("%Y-%m-%d %H:%M:%S"), date.strftime("%Y-%m-%d %H:%M:%S")))
+            memcache.set("UserSession%s" % user.nickname(),"%s,%s,%s" %(date.strftime("%Y-%m-%d %H:%M:%S"), date.strftime("%Y-%m-%d %H:%M:%S"),IPAdd))
             profile = db.GqlQuery("SELECT * FROM User WHERE userID = :1", users.get_current_user()).get()
             profile.lastSession = date
             profile.isActive = True
@@ -53,8 +55,8 @@ class MainPage(webapp.RequestHandler):
                 logging.info("THE SESSION in COLLECT")
                 logging.info(last_active)
                 if datetime.datetime.today() - datetime.timedelta(minutes=3) > last_active:
-                    IPAdd = self.request.remote_addr
                     #how to use an API call in Python:
+                    IPAdd = session[2]
                     url = 'http://api.hostip.info/get_html.php?ip=%s' % IPAdd
                     result = urlfetch.fetch(url, method='GET')
                     logging.info("GETTING COUTRY")
@@ -97,14 +99,26 @@ class DiseaseMap(webapp.RequestHandler):
         template_values = {}
         path = os.path.join(os.path.dirname(__file__), 'diseaseMap.html')
         self.response.out.write(template.render(path, template_values))
+        
+class statPage(webapp.RequestHandler):
+    def get(self):
+        template_values = {}
+        path = os.path.join(os.path.dirname(__file__), 'statsPage.html')
+        self.response.out.write(template.render(path, template_values))
 
 class JSONMeHandler(webapp.RequestHandler):
     def get(self):
         user = users.get_current_user()
-        results = db.GqlQuery("SELECT * FROM User WHERE userID = :1", users.get_current_user()).get()
+        results = db.GqlQuery("SELECT * FROM User WHERE userID = :1", user).get()
+        session = memcache.get("UserSession%s" % user.nickname())
+        IPAdd = session[2]
+        url = 'http://api.hostip.info/get_html.php?ip=%s' % IPAdd
+        result = urlfetch.fetch(url, method='GET')
+        result = result.content.split("(")
+        result = result[1].split(")")
         results = {"name" : results.name,
                    "dob" : self.changeDate(results.dob),
-                   "email" : str(results.userID),
+                   "country" : result[0],
                    "clinic": results.clinic.address}
         self.response.out.write(json.dumps(results))
     
@@ -160,15 +174,33 @@ class JSONMap (webapp.RequestHandler):
     def get(self):
         dis = self.request.get('disease')
         disease = db.GqlQuery("SELECT * FROM Disease WHERE disease = :1", dis)
-        logging.info("RETURNED FROM STORE")
-        logging.info(str(disease[0].country))
         self.response.out.write(json.dumps(disease[0].country))
+    
+class Simulate(webapp.RequestHandler):
+    def get(self):
+        simulator.generatePermanent()
+        simulator.generateStatic()
+        
+class SimulateSess(webapp.RequestHandler):
+    def get(self):
+        simulator.generateDynam()
+
+class UserStats(webapp.RequestHandler):
+    def get(self):
+        timeFrame = datetime.datetime.today()- datetime.timedelta(days= 400)
+        session = db.GqlQuery("SELECT * FROM Sessions WHERE sessionStart > :1 ORDER BY sessionStart ASC", timeFrame)
+        response = self.makeJSON(session)
+        logging.info(json.dumps(response))
+        self.response.out.write(json.dumps(response))
         
     def makeJSON(self, response):
-        jsonReady = []
-        for dis in range(0,len(response[0].country)):
-            jsonReady.append(response[0][dis])
-        jsonReady = list(set(jsonReady))
+        jsonReady = {}
+        for sess in range(0,response.count()):
+            country = response[sess].country
+            if(country not in jsonReady):
+                jsonReady['%s' %country] = 1
+            else:
+                jsonReady[country]= jsonReady[country]+1
         return jsonReady
         
 class Populate():
@@ -253,7 +285,11 @@ application = webapp.WSGIApplication([
   ('/json/map', JSONMap),
   ('/json/me', JSONMeHandler),
   ('/json/vaccines', JSONVacHandler),
-  ('/json/diseases', JSONDisease)
+  ('/json/diseases', JSONDisease),
+  ('/json/stats', UserStats),
+  ('/admin/displayStats', statPage),
+  ('/admin/session', SimulateSess),
+  ('/admin/simulate', Simulate)
 ], debug=True)
 
 

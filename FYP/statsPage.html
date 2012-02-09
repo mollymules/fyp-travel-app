@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+	<title>User Logins</title>
+	<meta name="viewport" content="user-scalable=no, width=device-width height=device-height" />
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.css" />
+	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.js"></script>
+</head>
+
+<body>
+<div data-role="page" id="chartPage" >
+		<script type="text/javascript">
+		var chartImg = "";
+		$("#chartPage").bind('pageinit', function() {
+				$.getJSON('/json/stats',function(data) {
+					chartImg += '<img src=\'http://chart.apis.google.com/chart?';
+					var countries = 'chxl=1:';
+					var values = '&chd=t:';
+					var places = '&chxp=0';
+					var max = 0
+					var i = 0;
+					$.each(data, function(key, val) {
+						if(i == 0){
+							countries += '|'+key;
+							values += val;
+							places += ','+i;
+						}else{
+							countries += '|'+key;
+							values += ','+ val;
+							places += ','+(i+17);
+						}
+						if(val > max){
+							max = val;
+						}
+						i++;
+					});
+					chartImg +=countries+'&chxr=0,0,'+max+'&chxt=x,y&chbh=a,4,7&chs=280x320&cht=bhs&chco=A2C180&chds=0,'+max+
+					values+ '&chdlp=l&chtt=User+Login+by+Country\'>';
+					$("#chart").append(chartImg).trigger("create");
+				});
+			});			
+		</script>
+		<div data-role="header">
+			<h4>User Logins</h4>
+			<div class="ui-btn-left">
+				<a href="/">
+					<img src="images/3Strata_Icon.png" height= "30px" width= "30px"/>
+				</a>
+			</div>
+		</div>
+		
+		<div data-role="content">
+			<div id="chart" style="text-align:center; height: 80%;"></div>
+		</div>
+		
+		<div data-role="footer" data-position="fixed">
+			<h4>Clinic Communication</h4>
+		</div>
+		
+</div>
+</body>
+</html>

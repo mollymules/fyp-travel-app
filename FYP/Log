@@ -25,6 +25,9 @@ Problem: couldn't update to SVN, needed to clean, couldn't clean due to error.
 Solution: disconnect from SVN.
 Problem: was using urllib to fetch results however gave warning about the word host
 Solution: switched to urlfetch as it doesn't distcriminate against host word
+Problem: need to delete datastore
+Solution: use dev_appserver script in cmd in the directory of the app, then call --clear_datastore 
+			-- help to get all things
 
 Tasks:	+ prefetech all pages so transitions are fast: app caching
 		+ use local storage between pages

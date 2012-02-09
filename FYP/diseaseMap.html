@@ -16,7 +16,7 @@
 			$("#mapPage").bind('pageinit', function() {
 				var dis = localStorage.getItem('disease');
 				$.getJSON('/json/map?disease='+dis,function(data) {
-					disContainer += '<img src=\'http://chart.apis.google.com/chart?cht=map&chs=450x500&chld=';
+					disContainer += '<img src=\'http://chart.apis.google.com/chart?cht=map&chs=280x320&chld=';
 					for ( var i = 0; i < data.length; i++) {
 						if(i == 0){
 							disContainer += (data[i]);
@@ -34,10 +34,15 @@
 
 		<div data-role="header">
 			<h4>Disease Map</h4>
+			<div class="ui-btn-left">
+				<a href="/">
+					<img src="images/3Strata_Icon.png" height= "30px" width= "30px"/>
+				</a>
+			</div>
 		</div>
 		
 		<div data-role="content">
-			<div id="map"></div>
+			<div id="map" style="text-align:center;"></div>
 		</div>
 		
 		<div data-role="footer" data-position="fixed">

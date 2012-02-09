@@ -10,6 +10,10 @@ handlers:
 - url: /images
   static_dir: images
   
+- url: /admin
+  login: admin
+  script: travel_app.py
+  
 - url: /.*
   login: required
   script: travel_app.py

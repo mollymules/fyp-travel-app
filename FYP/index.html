@@ -6,13 +6,21 @@
 		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.css" />
 		<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
 		<script src="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.js"></script>
-		<script type='text/javascript' src='https://www.google.com/jsapi'></script>
+		<link rel="stylesheet" type="text/css" href="Stylesheets/main.css" />
+		
 	</head>
   	<body>
 		<div data-role="page">
-  			<div data-role="header"><h4>Home Page</h4></div>
+  			<div data-role="header">
+  				<h4>Home Page</h4>
+  				<div class="ui-btn-left">
+            		<a href="/">
+                		<img src="images/3Strata_Icon.png" height= "30px" width= "30px"/>
+            		</a>
+        		</div>  
+  			</div>
 			<div data-role="content">
-				<div align="CENTER" ><img src ="images/Logo1.png" height="30%" width="70%">	</div>
+				<div style="text-align:center;" ><img src ="images/Logo1.png" height="30%" width="70%">	</div>
 				<a href="/profile" data-role="button">My Itinerary</a>
 				<a href="/" data-role="button">My Area</a>
 				<a href="/vaccine_list" data-role="button">My Yellow Book</a>

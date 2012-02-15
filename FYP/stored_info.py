@@ -16,6 +16,12 @@ class Vaccine(db.Model):
     """"Models an individual vaccine"""
     vaccine = db.StringProperty()
     diseases = db.ListProperty(db.Key)
+    
+class Emergency(db.Model):
+    police = db.PhoneNumberProperty()
+    ambulance = db.PhoneNumberProperty()
+    fire =db.PhoneNumberProperty()
+    country = db.StringProperty()
 
 """ACTIVE CLASSES, NEED TO BE POPULATED PER USER LOG IN"""
 

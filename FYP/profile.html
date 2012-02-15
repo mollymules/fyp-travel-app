@@ -7,7 +7,8 @@
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.css" />
 	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="Stylesheets/main.css" />
+	<link rel="stylesheet" href="/stylesheet/main.css" type="text/css" />
+	
 </head>
 
 <body>
@@ -18,8 +19,8 @@
             			function(data) {
             				//Create details div
             				var personContainer = $('<fieldset class="ui-grid-b">');
-            				personContainer.append('<div class="ui-block-a"><h6>Name: </h6><h6>DOB: </h6><h6>Clinic: </h6></div>'); 
-            				personContainer.append('<div class="ui-block-b"><h6>' + data.name+ '</h6><h6>' + data.dob+ '</h6><h6>' + data.clinic+ '</h6></div>');
+            				personContainer.append('<div class="ui-block-a"><p>Name: </p><p>DOB: </p><p>Clinic: </p></div>'); 
+            				personContainer.append('<div class="ui-block-b"><p>' + data.name+ '</p><p>' + data.dob+ '</p><p>' + data.clinic+ '</p></div>');
             				personContainer.append('</fieldset>');
             				var location = '<img src=\'http://chart.apis.google.com/chart?cht=map&chs=140x160&chld='+data.country+'&chco=909090|FF4040&chtt=Where+You+Are:\'>';
             				if(data.country=="Private Address"){

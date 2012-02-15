@@ -23,9 +23,14 @@ class MainPage(webapp.RequestHandler):
         user = users.get_current_user()
         self.setUserSession(user)
         self.collectUserSessions()
-        template_values = {}
+        session = memcache.get("UserSession%s" % user.nickname())
+        IPAdd = session[2]
+        url = 'http://api.hostip.info/get_html.php?ip=%s' % IPAdd
+        result = urlfetch.fetch(url, method='GET')
+        result = result.content.split("(")
+        result = result[1].split(")")
         path = os.path.join(os.path.dirname(__file__), 'index.html')
-        self.response.out.write(template.render(path, template_values))
+        self.response.out.write(template.render(path, {'location':result}))
         
     def setUserSession(self, user):
         date = datetime.datetime.today()
@@ -99,6 +104,11 @@ class DiseaseMap(webapp.RequestHandler):
         template_values = {}
         path = os.path.join(os.path.dirname(__file__), 'diseaseMap.html')
         self.response.out.write(template.render(path, template_values))
+
+class EmergNums(webapp.RequestHandler):
+    def get(self):
+        path = os.path.join(os.path.dirname(__file__), 'numbers.html')
+        self.response.out.write(template.render(path, {}))
         
 class statPage(webapp.RequestHandler):
     def get(self):
@@ -110,15 +120,8 @@ class JSONMeHandler(webapp.RequestHandler):
     def get(self):
         user = users.get_current_user()
         results = db.GqlQuery("SELECT * FROM User WHERE userID = :1", user).get()
-        session = memcache.get("UserSession%s" % user.nickname())
-        IPAdd = session[2]
-        url = 'http://api.hostip.info/get_html.php?ip=%s' % IPAdd
-        result = urlfetch.fetch(url, method='GET')
-        result = result.content.split("(")
-        result = result[1].split(")")
         results = {"name" : results.name,
                    "dob" : self.changeDate(results.dob),
-                   "country" : result[0],
                    "clinic": results.clinic.address}
         self.response.out.write(json.dumps(results))
     
@@ -175,7 +178,23 @@ class JSONMap (webapp.RequestHandler):
         dis = self.request.get('disease')
         disease = db.GqlQuery("SELECT * FROM Disease WHERE disease = :1", dis)
         self.response.out.write(json.dumps(disease[0].country))
-    
+
+class JSONNum (webapp.RequestHandler):
+    def get(self):
+        country = self.request.get('country')
+        results = db.GqlQuery("SELECT * FROM Emergency WHERE country = :1", country).get()
+        if results is not None:
+            logging.info("PROPER COUNTRY")
+            results = {"police" : results.police,
+                       "fire" : results.fire,
+                       "ambulance": results.ambulance}
+        else:
+            results = {"police" : "112",
+                       "fire" : "112",
+                       "ambulance": "112"}
+            
+        self.response.out.write(json.dumps(results))
+        
 class Simulate(webapp.RequestHandler):
     def get(self):
         simulator.generatePermanent()
@@ -282,10 +301,12 @@ application = webapp.WSGIApplication([
   ('/vaccine_list', VaccineList),
   ('/disease_list', DiseaseList),
   ('/disease_map', DiseaseMap),
+  ('/emerg_numbers', EmergNums),
   ('/json/map', JSONMap),
   ('/json/me', JSONMeHandler),
   ('/json/vaccines', JSONVacHandler),
   ('/json/diseases', JSONDisease),
+  ('/json/numbers', JSONNum),
   ('/json/stats', UserStats),
   ('/admin/displayStats', statPage),
   ('/admin/session', SimulateSess),

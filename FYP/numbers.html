@@ -2,7 +2,7 @@
 <html>
 
 <head>
-	<title>Disease Map</title>
+	<title>Emergency Numbers</title>
 	<meta name="viewport" content="user-scalable=no, width=device-width height=device-height" />
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.css" />
 	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
@@ -11,29 +11,27 @@
 </head>
 
 <body>
-<div data-role="page" id="mapPage" >
+	<div data-role="page" id="numPage" >
 		<script type="text/javascript">
-		var disContainer = "";
-			$("#mapPage").live('pageshow', function() {
-				var dis = localStorage.getItem('disease');
-				$.getJSON('/json/map?disease='+dis,function(data) {
-					disContainer += '<img src=\'http://chart.apis.google.com/chart?cht=map&chs=320x160&chld=';
-					for ( var i = 0; i < data.length; i++) {
-						if(i == 0){
-							disContainer += (data[i]);
-						}else{
-							disContainer += '|'+ data[i];
-						}
-					}
-					disContainer += '&chco=909090|FF4040\'>';
-					$("#map").replaceWith(disContainer).trigger("refresh");
+			$("#numPage").live('pageshow', function() {
+				var loc = localStorage.getItem('location');
+				alert(loc);
+				$.getJSON('/json/numbers?country='+loc,function(data) {
+					var numContainer = $('<ul data-role="listview">');
+					numContainer.append('<li><img src="images/ambulance.png" height="80em" width="80em"/><h3>'+ data.ambulance+ '</h3></li>');
+					numContainer.append('<li><img src="images/fire.png" height="80em" width="80em"/><h3>'+ data.fire+ '</h3></li>');
+					numContainer.append('<li><img src="images/police.png" height="80em" width="80em"/><h3>'+ data.police+ '</h3></li>');
+					numContainer.append('</ul>');
+					$("#numList").append(numContainer).trigger("create");
+					
 				});
-			});	
+			});
+
 		</script>
 		
 
 		<div data-role="header">
-			<h4>Disease Map</h4>
+			<h4>Emergency Numbers</h4>
 			<div class="ui-btn-left">
 				<a href="/">
 					<img src="images/3Strata_Icon.png" height= "30px" width= "30px"/>
@@ -42,13 +40,13 @@
 		</div>
 		
 		<div data-role="content">
-			<div style="text-align:center;"><img id="map"></div>
+			<div id="numList"></div>
 		</div>
 		
 		<div data-role="footer" data-position="fixed">
 			<h4>Clinic Communication</h4>
 		</div>
 		
-</div>
+	</div>
 </body>
 </html>

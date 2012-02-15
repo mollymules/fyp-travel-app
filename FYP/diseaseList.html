@@ -7,23 +7,25 @@
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.css" />
 	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.js"></script>
-	<script type='text/javascript' src='https://www.google.com/jsapi'></script>
+	<link rel="stylesheet" href="/stylesheet/main.css" type="text/css" />
 </head>
 
 <body>
 	<div data-role="page" id="disPage" >
 		<script type="text/javascript">
 		var disease;
+			$("#disPage").live('pageshow', function() {
+				$('#button').live('click', function() {
+					var selected = $(this).text();
+					localStorage.setItem("disease",selected);
+				});
+			});
 			$("#disPage").bind('pageinit', function() {
 				$.getJSON('/json/diseases',function(data) {
 					disease = data;
 					var disContainer = $('<div id="disList">');
 					for ( var i = 0; i < data.length; i++) {
 						disContainer.append('<a href="/disease_map" data-role="button" id="button">'+ data[i]+ '</a>');
-						$('#button').live('click', function() {
-								var selected = $(this).text();
-								localStorage.setItem("disease",selected);
-						});
 					}
 					disContainer.append('</div>');
 					$("#disList").append(disContainer).trigger("create");

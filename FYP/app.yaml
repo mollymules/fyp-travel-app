@@ -4,8 +4,8 @@ runtime: python
 api_version: 1
 
 handlers:   
-- url: /stylesheets
-  static_dir: stylesheets
+- url: /stylesheet
+  static_dir: stylesheet
   
 - url: /images
   static_dir: images
@@ -19,4 +19,5 @@ handlers:
   script: travel_app.py
   
 threadsafe: true
+
 

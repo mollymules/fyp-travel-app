@@ -1,8 +1,13 @@
-body {
-  font-family: Verdana, Helvetica, sans-serif;
-  background-color: #000FFF;
+
+.ui-header
+.ui-title, 
+.ui-footer 
+.ui-title{
+	margin-right: 10px;
+	margin-left: 20px;
 }
-.ui-header {
-	margin-right: 40px;
-	color: #000FFF;
+
+.ui-li-divider, 
+.ui-li-static {
+padding: 1px;
 }

@@ -1,13 +1,13 @@
 <!DOCTYPE HTML>
-<html>
+<html manifest="mobile/offline.appcache"> 
 
 <head>
 	<title>Disease Protection</title>
-	<meta name="viewport" content="user-scalable=no, width=device-width height=device-height" />
-	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.css" />
-	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-	<script src="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.js"></script>
-	<link rel="stylesheet" href="/stylesheet/main.css" type="text/css" />
+		<meta name="viewport" content="user-scalable=no, width=device-width height=device-height" /> 
+		<link rel="stylesheet" href="mobile/jquery.mobile-1.0.1.min.css" />
+		<script type="text/javascript" src="mobile/jquery-1.7.1.min.js"></script>
+		<script type="text/javascript" src="mobile/jquery.mobile-1.0.1.min.js"></script>
+		<link rel="stylesheet" type="text/css" src="stylesheet/main.css" />
 </head>
 
 <body>
@@ -22,10 +22,16 @@
 			});
 			$("#disPage").bind('pageinit', function() {
 				$.getJSON('/json/diseases',function(data) {
+    				if (navigator.onLine){
+    					localStorage.setItem("diseases",JSON.stringify(data));
+    				}else{
+    		    		data = localStorage.getItem("diseases");
+						data = JSON.parse(data);
+    				}
 					disease = data;
 					var disContainer = $('<div id="disList">');
 					for ( var i = 0; i < data.length; i++) {
-						disContainer.append('<a href="/disease_map" data-role="button" id="button">'+ data[i]+ '</a>');
+						disContainer.append('<a href="/disease_map" data-role="button" id="button" rel="external">'+ data[i]+ '</a>');
 					}
 					disContainer.append('</div>');
 					$("#disList").append(disContainer).trigger("create");

@@ -1,0 +1,24 @@
+CACHE MANIFEST
+
+CACHE:
+#/
+#/offline
+/stylesheet/main.css
+/images/3Strata_Icon.png
+/images/fire.png
+/images/ambulance.png
+/images/police.png
+/images/Logo1.png
+/mobile/images/icons-18-white.png
+/mobile/images/ajax-loader.png
+/mobile/jquery.mobile-1.0.1.min.css
+/mobile/jquery-1.7.1.min.js
+/mobile/jquery.mobile-1.0.1.min.js
+
+FALLBACK:
+#/disease_map /offline
+#/* /offline
+
+NETWORK:
+*
+#/disease_map 

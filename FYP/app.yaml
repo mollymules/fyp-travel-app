@@ -14,6 +14,14 @@ handlers:
   login: admin
   script: travel_app.py
   
+- url: /mobile/(.*\.appcache)
+  static_files: mobile/\1
+  mime_type: text/cache-manifest
+  upload: mobile/(.*\.appcache)
+  
+- url: /mobile
+  static_dir: mobile
+  
 - url: /.*
   login: required
   script: travel_app.py

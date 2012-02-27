@@ -104,10 +104,25 @@ class DiseaseMap(webapp.RequestHandler):
         template_values = {}
         path = os.path.join(os.path.dirname(__file__), 'diseaseMap.html')
         self.response.out.write(template.render(path, template_values))
+        
+class localInfo(webapp.RequestHandler):
+    def get(self):
+        path = os.path.join(os.path.dirname(__file__), 'localInfo.html')
+        self.response.out.write(template.render(path, {}))
 
 class EmergNums(webapp.RequestHandler):
     def get(self):
         path = os.path.join(os.path.dirname(__file__), 'numbers.html')
+        self.response.out.write(template.render(path, {}))
+
+class RSSFeed(webapp.RequestHandler):
+    def get(self):
+        path = os.path.join(os.path.dirname(__file__), 'rssFeed.html')
+        self.response.out.write(template.render(path, {}))
+
+class Offline(webapp.RequestHandler):
+    def get(self):
+        path = os.path.join(os.path.dirname(__file__), 'offline.html')
         self.response.out.write(template.render(path, {}))
         
 class statPage(webapp.RequestHandler):
@@ -301,7 +316,10 @@ application = webapp.WSGIApplication([
   ('/vaccine_list', VaccineList),
   ('/disease_list', DiseaseList),
   ('/disease_map', DiseaseMap),
+  ('/local_info', localInfo),
+  ('/health_news', RSSFeed),
   ('/emerg_numbers', EmergNums),
+  ('/offline', Offline),
   ('/json/map', JSONMap),
   ('/json/me', JSONMeHandler),
   ('/json/vaccines', JSONVacHandler),

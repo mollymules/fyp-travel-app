@@ -1,26 +1,32 @@
 <!DOCTYPE HTML>
-<html>
-
+<html manifest="offline.appcache"> 
 <head>
 	<title>Emergency Numbers</title>
-	<meta name="viewport" content="user-scalable=no, width=device-width height=device-height" />
-	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.css" />
-	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-	<script src="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.js"></script>
-	<link rel="stylesheet" href="/stylesheet/main.css" type="text/css" />
+		<meta name="viewport" content="user-scalable=no, width=device-width height=device-height" /> 
+		<link rel="stylesheet" href="mobile/jquery.mobile-1.0.1.min.css" />
+		<script type="text/javascript" src="mobile/jquery-1.7.1.min.js"></script>
+		<script type="text/javascript" src="mobile/jquery.mobile-1.0.1.min.js"></script>
+		<link rel="stylesheet" type="text/css" src="stylesheet/main.css" />
 </head>
 
 <body>
-	<div data-role="page" id="numPage" >
+	
+	<div data-role="page" id="numPage">
 		<script type="text/javascript">
 			$("#numPage").live('pageshow', function() {
 				var loc = localStorage.getItem('location');
 				alert(loc);
 				$.getJSON('/json/numbers?country='+loc,function(data) {
+    				if (navigator.onLine){
+    					localStorage.setItem("numbers",JSON.stringify(data));
+    				}else{
+    		    		data = localStorage.getItem("numbers");
+						data = JSON.parse(data);
+    				}
 					var numContainer = $('<ul data-role="listview">');
-					numContainer.append('<li><img src="images/ambulance.png" height="80em" width="80em"/><h3>'+ data.ambulance+ '</h3></li>');
-					numContainer.append('<li><img src="images/fire.png" height="80em" width="80em"/><h3>'+ data.fire+ '</h3></li>');
-					numContainer.append('<li><img src="images/police.png" height="80em" width="80em"/><h3>'+ data.police+ '</h3></li>');
+					numContainer.append('<li><img src="images/ambulance.png" height="75em" width="75em"/><h3>'+ data.ambulance+ '</h3></li>');
+					numContainer.append('<li><img src="images/fire.png" height="75em" width="75em"/><h3>'+ data.fire+ '</h3></li>');
+					numContainer.append('<li><img src="images/police.png" height="75em" width="75em"/><h3>'+ data.police+ '</h3></li>');
 					numContainer.append('</ul>');
 					$("#numList").append(numContainer).trigger("create");
 					
@@ -29,7 +35,6 @@
 
 		</script>
 		
-
 		<div data-role="header">
 			<h4>Emergency Numbers</h4>
 			<div class="ui-btn-left">
@@ -41,6 +46,60 @@
 		
 		<div data-role="content">
 			<div id="numList"></div>
+		</div>
+		
+		<div data-role="footer" data-position="fixed">
+			<h4>Clinic Communication</h4>
+		</div>
+		
+	</div>
+
+	<div data-role="page" id="rssPage" >
+		<script type="text/javascript">
+			$("#rssPage").live('pageshow', function() {
+				var loc = localStorage.getItem('location');
+				alert(loc);
+				$.get("http://healthmap.org/promed2.xml", function(data) {
+    				if (navigator.onLine){
+    					localStorage.setItem("rss",JSON.stringify(data));
+    				}else{
+    		    		data = localStorage.getItem("rss");
+						data = JSON.parse(data);
+    				}
+    			    var $xml = $(data);
+					var rssContainer = $('<ul data-role="listview" data-theme="c" data-dividertheme="d" data-counttheme="e">');
+    			    $xml.find("item").each(function() {
+    			        var $this = $(this),
+    			            item = {
+    			                title: $this.find("title").text(),
+    			                link: $this.find("link").text(),
+    			                description: $this.find("description").text(),
+    			                pubDate: $this.find("pubDate").text(),
+    			                author: $this.find("author").text()
+				        }
+    					rssContainer.append('<li><h2><a href=#article>'+ item.title +'</a></h2></li>');
+    					}
+    				});	
+					rssContainer.append('</ul>');
+					$("#rssList").append(rssContainer).trigger("create");
+					
+				});
+			});
+
+		</script>
+		
+
+		<div data-role="header">
+			<h4>Health News</h4>
+			<div class="ui-btn-left">
+				<a href="/">
+					<img src="images/3Strata_Icon.png" height= "30px" width= "30px"/>
+				</a>
+			</div>
+		</div>
+		
+		<div data-role="content">
+			<div id="rssList"></div>
 		</div>
 		
 		<div data-role="footer" data-position="fixed">

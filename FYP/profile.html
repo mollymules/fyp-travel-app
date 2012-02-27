@@ -1,13 +1,13 @@
 <!DOCTYPE HTML>
-<html>
+<html> 
 
 <head>
 	<title>My Itinerary</title>
-	<meta name="viewport" content="user-scalable=no, width=device-width height=device-height" />
-	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.css" />
-	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-	<script src="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.js"></script>
-	<link rel="stylesheet" href="/stylesheet/main.css" type="text/css" />
+		<meta name="viewport" content="user-scalable=no, width=device-width height=device-height" /> 
+		<link rel="stylesheet" href="mobile/jquery.mobile-1.0.1.min.css" />
+		<script type="text/javascript" src="mobile/jquery-1.7.1.min.js"></script>
+		<script type="text/javascript" src="mobile/jquery.mobile-1.0.1.min.js"></script>
+		<link rel="stylesheet" type="text/css" src="stylesheet/main.css" />
 	
 </head>
 
@@ -17,17 +17,25 @@
             $("#profilePage").live('pageinit', function() {
             	$.getJSON('/json/me',
             			function(data) {
+            				if (navigator.onLine){
+            					localStorage.setItem("profileInfo",JSON.stringify(data));
+            				}else{
+            		    		data = localStorage.getItem("profileInfo");
+								data = JSON.parse(data);
+            				}
             				//Create details div
             				var personContainer = $('<fieldset class="ui-grid-b">');
             				personContainer.append('<div class="ui-block-a"><p>Name: </p><p>DOB: </p><p>Clinic: </p></div>'); 
             				personContainer.append('<div class="ui-block-b"><p>' + data.name+ '</p><p>' + data.dob+ '</p><p>' + data.clinic+ '</p></div>');
             				personContainer.append('</fieldset>');
-            				var location = '<img src=\'http://chart.apis.google.com/chart?cht=map&chs=140x160&chld='+data.country+'&chco=909090|FF4040&chtt=Where+You+Are:\'>';
-            				if(data.country=="Private Address"){
+            				/*var country = localStorage.getItem("location");
+            				var location = '<img src=\'http://chart.apis.google.com/chart?cht=map&chs=140x160&chld='+country+'&chco=909090|FF4040&chtt=Where+You+Are:\'>';
+            				alert(country);
+            				if(country=="Private Address,"){
             					location = '<img src=\'http://chart.apis.google.com/chart?cht=map&chs=140x160&chld=IE&chco=909090|FF4040&chtt=Where+You+Are:\'>';
             				}
+            				$("#map").append(location).trigger("create");*/
             				$("#details").replaceWith(personContainer);
-            				$("#map").append(location).trigger("create");
             	});
             });
         </script>

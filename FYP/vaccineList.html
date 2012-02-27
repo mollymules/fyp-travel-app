@@ -1,13 +1,13 @@
 <!DOCTYPE HTML>
-<html>
+<html manifest="mobile/offline.appcache"> 
 
 <head>
 	<title>Yellow Book</title>
-	<meta name="viewport" content="user-scalable=no, width=device-width height=device-height" />
-	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.css" />
-	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-	<script src="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.js"></script>
-	<link rel="stylesheet" href="/stylesheet/main.css" type="text/css" />
+		<meta name="viewport" content="user-scalable=no, width=device-width height=device-height" /> 
+		<link rel="stylesheet" href="mobile/jquery.mobile-1.0.1.min.css" />
+		<script type="text/javascript" src="mobile/jquery-1.7.1.min.js"></script>
+		<script type="text/javascript" src="mobile/jquery.mobile-1.0.1.min.js"></script>
+		<link rel="stylesheet" type="text/css" src="stylesheet/main.css" />
 </head>
 
 <body>
@@ -15,6 +15,12 @@
 		<script type="text/javascript">
 			$("#vaccPage").bind('pageinit', function() {
 				$.getJSON('/json/vaccines', function(data) {
+    				if (navigator.onLine){
+    					localStorage.setItem("vaccines",JSON.stringify(data));
+    				}else{
+    		    		data = localStorage.getItem("vaccines");
+						data = JSON.parse(data);
+    				}
 					var vacContainer = $('<div data-role="collapsible-set">');
 					for ( var i = 0; i < data.length; i++) {
 						vacContainer.append('<div data-role="collapsible"div data-role="collapsible">'

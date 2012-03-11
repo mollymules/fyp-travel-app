@@ -1,8 +1,7 @@
 CACHE MANIFEST
 
 CACHE:
-#/
-#/offline
+/
 /stylesheet/main.css
 /images/3Strata_Icon.png
 /images/fire.png
@@ -15,10 +14,6 @@ CACHE:
 /mobile/jquery-1.7.1.min.js
 /mobile/jquery.mobile-1.0.1.min.js
 
-FALLBACK:
-#/disease_map /offline
-#/* /offline
-
 NETWORK:
 *
-#/disease_map 
+ 

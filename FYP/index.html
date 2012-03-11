@@ -1,12 +1,12 @@
 <!DOCTYPE HTML>
-<html manifest="offline.appcache"> 
+<html manifest="mobile/offline.appcache"> 
 	<head>
 		<title>Home</title>
 	    <meta name="viewport" content="user-scalable=no, width=device-width height=device-height" /> 
 		<link rel="stylesheet" href="mobile/jquery.mobile-1.0.1.min.css" />
 		<script type="text/javascript" src="mobile/jquery-1.7.1.min.js"></script>
 		<script type="text/javascript" src="mobile/jquery.mobile-1.0.1.min.js"></script>
-		<link rel="stylesheet" type="text/css" src="stylesheet/main.css" />
+		<link rel="stylesheet" type="text/css" href="stylesheet/main.css" />
 		
 	</head>
   	<body>
@@ -15,19 +15,21 @@
   			<div data-role="header">
   				<h4>Home Page</h4>
   				<div class="ui-btn-left">
-            		<a href="/">
-                		<img src="images/3Strata_Icon.png" height= "30px" width= "30px"/>
+            		<a href="/" style="margin-bottom: 0.4em">
+                		<img src="images/3Strata_Icon.png" style="height:2em; width:2em;"/>
             		</a>
         		</div>  
   			</div>
 			<div data-role="content">
-				<div style="text-align:center;" ><img src ="images/Logo1.png" height="30%" width="70%">	</div>
-				<a href="/profile" data-role="button">My Itinerary</a>
-				<a href="/local_info" data-role="button">My Area</a>
-				<a href="/vaccine_list" data-role="button">My Yellow Book</a>
+				<div style="text-align:center; height:35%; width:100%;" ><img src ="images/Logo1.png" style="text-align:center; height:90%; width:80%; margin-bottom: 1em;"></div>
+				<div style="height:50%; width:100%;">
+					<a href="/profile" data-role="button">My Itinerary</a>
+					<a href="/local_info" data-role="button">My Area</a>
+					<a href="/vaccine_list" data-role="button">My Yellow Book</a>
+				</div>
 			</div>
 			<div data-role="footer" data-position="fixed">
-				<h4>Clinic Communication</h4>
+			<h4></h4>
 			</div>
   		</div>
   	</body>

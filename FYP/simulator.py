@@ -50,7 +50,6 @@ def generateStatic():
                       #"Lisa", "John", "Dorothy", "Michael", "Robert", "Richard", "Richard", "Sandra", "Sarah", "Laura", "Robert"]
         lastNames = ["Sullivan", "Miller", "Reed", "Adams", "Price"]#, "Ramirez", "Griffin", "Fisher", "Lee", "Gray ",
                      #"Anderson", "Bailey", "Hill", "Ellis", "Evans", "Baker", "Butler", "Harris", "Martin", " Murphy"]
-        homeCountry = ["Ireland", "England", "America", "Australia", "New Zealand"]
         clinics = db.GqlQuery("SELECT * FROM Clinic")
         vaccines = db.GqlQuery("SELECT * FROM Vaccine")
         
@@ -59,7 +58,7 @@ def generateStatic():
                 
                 user = User(name=first + " " + last, userID=users.User(first + last),
                     dob=datetime.datetime(random.randint(1960, 1990), random.randint(1, 12), random.randint(1, 28), 0, 0, 0),
-                     clinic=clinics[random.randint(0, clinics.count() - 1)], home=homeCountry[random.randint(0, len(homeCountry) - 1)],
+                     clinic=clinics[random.randint(0, clinics.count() - 1)],
                      firstSession=datetime.datetime.today() - datetime.timedelta(days=random.randint(0, 90)), 
                      lastSession=datetime.datetime.today(), isActive=False)
                 user.put()
@@ -79,6 +78,6 @@ def generateDynam():
         for user in range(0, users.count()):
             start = datetime.datetime(2011, random.randint(1, 12), random.randint(1, 28), random.randint(0, 23), 30, 00)
             sess = Sessions(userID=users[user].userID, sessionStart= start,
-                            sessionEnd=start + datetime.timedelta(minutes=random.randint(0, 90)), country=countries[random.randint(0, len(countries)-1)])
+                            sessionEnd=start + datetime.timedelta(minutes=random.randint(0, 20)), country=countries[random.randint(0, len(countries)-1)])
             sess.put()
 

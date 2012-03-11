@@ -1,51 +1,54 @@
 <!DOCTYPE HTML>
-<html manifest="offline.appcache"> 
+<html manifest="mobile/offline.appcache"> 
 <head>
-	<title>Emergency Numbers</title>
-		<meta name="viewport" content="user-scalable=no, width=device-width height=device-height" /> 
-		<link rel="stylesheet" href="mobile/jquery.mobile-1.0.1.min.css" />
-		<script type="text/javascript" src="mobile/jquery-1.7.1.min.js"></script>
-		<script type="text/javascript" src="mobile/jquery.mobile-1.0.1.min.js"></script>
-		<link rel="stylesheet" type="text/css" src="stylesheet/main.css" />
+	<title>Health Article</title>
+	<meta name="viewport" content="user-scalable=no, width=device-width height=device-height" />
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.css" />
+	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="stylesheet/main.css" />
 </head>
 
 <body>
-
-	<div data-role="page" id="articlePage" >
+<div data-role="page" id="articlePage" >
 		<script type="text/javascript">
-			$("#articlePage").live('pageshow', function() {
-    		    var data = localStorage.getItem("rss");
-				data = JSON.parse(data);
-				var story = localStorage.getItem("storyChoice");
-				var path = "http://query.yahooapis.com/v1/public/yql?q=";  
-				path .= urlencode("SELECT * FROM feed WHERE url='http://feeds.feedburner.com/$siteName' AND guid='$origLink'");  
-				path .= "&format=json";
-				var articleContainer = $('<ul data-role="listview" data-theme="b" data-dividertheme="d" data-counttheme="e">');
-    			articleContainer.append('<li><h2>'+ data.value.items[story].title +'</h2></li>');	
-				articleContainer.append('</ul>');
-				$("#article").append(rssContainer).trigger("create");	
-			});
-
+			$("#articlePage").bind('pageinit', function() {
+				var story = localStorage.getItem('storyChoice');
+				story = JSON.parse(story);
+				var feed = localStorage.getItem('rss');
+				feed = JSON.parse(feed);
+				story = feed.value.items[story];
+				var articleContainer = '<div id ="article"><h2>'+story.title+'</h2>';
+				articleContainer += '<p>'+story.description+'</p></div>';
+				var link = '<a href="'+story.link+'" data-role="button" target="_blank" rel="external" style="width:80%; border: none;" '+
+				'id="footer" class="ui-btn ui-btn-corner-all ui-shadow ui-btn-up-a"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Full Article</span></span></a>';
+				var i,L=document.images.length;
+				for(i=0;i<L;++i){
+					document.images[i].style.height = '2em'; 
+					document.images[i].style.width = '2em'; 
+				}
+				$("#article").replaceWith(articleContainer).trigger("create");
+				$("#footer").replaceWith(link).trigger("create");
+			});	
 		</script>
 		
 
 		<div data-role="header">
-			<h4>Health News</h4>
+			<h4>Health Article</h4>
 			<div class="ui-btn-left">
 				<a href="/">
-					<img src="images/3Strata_Icon.png" height= "30px" width= "30px"/>
+					<img src="images/3Strata_Icon.png" style="height:2em; width:2em;"/>
 				</a>
 			</div>
 		</div>
 		
 		<div data-role="content">
-			<div id="article"></div>
+			<div id ="article"></div>
 		</div>
 		
-		<div data-role="footer" data-position="fixed">
-			<h4>Clinic Communication</h4>
+		<div data-role="footer" class="ui-bar" data-position="fixed">
+			<h4 style="text-align:center; margin-right:3em; margin-left: 1em;"><a href="index.html" data-role="button" style="width:80%; border: none;" id="footer">Full Article</a></h4>
 		</div>
-		
-	</div>
+</div>
 </body>
 </html>

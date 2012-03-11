@@ -7,7 +7,7 @@
 		<link rel="stylesheet" href="mobile/jquery.mobile-1.0.1.min.css" />
 		<script type="text/javascript" src="mobile/jquery-1.7.1.min.js"></script>
 		<script type="text/javascript" src="mobile/jquery.mobile-1.0.1.min.js"></script>
-		<link rel="stylesheet" type="text/css" src="stylesheet/main.css" />
+		<link rel="stylesheet" type="text/css" href="stylesheet/main.css" />
 </head>
 
 <body>
@@ -29,7 +29,7 @@
 						+ '</h4><h4>Date Expired: '+ data[i].dateExpired
 						+ '</h4></div>');
 					}
-					vacContainer.append('<\div>')
+					vacContainer.append('</div>');
 					$("#vacList").append(vacContainer).trigger("create");
 				});
 			});
@@ -39,7 +39,7 @@
 			<h4>Yellow Book</h4>
 			<div class="ui-btn-left">
 				<a href="/">
-					<img src="images/3Strata_Icon.png" height= "30px" width= "30px"/>
+					<img src="images/3Strata_Icon.png" style="height:2em; width:2em;"/>
 				</a>
 			</div>
 		</div>
@@ -48,7 +48,7 @@
 			<a href="/disease_list" data-role="button">Disease Coverage</a>
 		</div>
 		<div data-role="footer" data-position="fixed">
-			<h4>Clinic Communication</h4>
+		<h4></h4>
 		</div>
 	</div>
 	

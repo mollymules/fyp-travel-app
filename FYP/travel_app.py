@@ -120,6 +120,16 @@ class RSSFeed(webapp.RequestHandler):
         path = os.path.join(os.path.dirname(__file__), 'rssFeed.html')
         self.response.out.write(template.render(path, {}))
 
+class RSSArticle(webapp.RequestHandler):
+    def get(self):
+        path = os.path.join(os.path.dirname(__file__), 'rssArticle.html')
+        self.response.out.write(template.render(path, {}))
+        
+class LiveMap(webapp.RequestHandler):
+    def get(self):
+        path = os.path.join(os.path.dirname(__file__), 'liveMap.html')
+        self.response.out.write(template.render(path, {}))
+
 class Offline(webapp.RequestHandler):
     def get(self):
         path = os.path.join(os.path.dirname(__file__), 'offline.html')
@@ -221,7 +231,8 @@ class SimulateSess(webapp.RequestHandler):
 
 class UserStats(webapp.RequestHandler):
     def get(self):
-        timeFrame = datetime.datetime.today()- datetime.timedelta(days= 400)
+        frame = self.request.get('time')
+        timeFrame = datetime.datetime.today()- datetime.timedelta(days= int(frame))
         session = db.GqlQuery("SELECT * FROM Sessions WHERE sessionStart > :1 ORDER BY sessionStart ASC", timeFrame)
         response = self.makeJSON(session)
         logging.info(json.dumps(response))
@@ -267,7 +278,7 @@ class Populate():
         clin.put()
 
         user = User(name=users.get_current_user().nickname(), userID=users.get_current_user(), dob=datetime.datetime(1990, 8, 17, 0, 0, 0), 
-                    clinic=clin, firstSession=datetime.datetime.today(), home='Ireland', lastSession= datetime.datetime.today(), isActive= True)
+                    clinic=clin, firstSession=datetime.datetime.today(), lastSession= datetime.datetime.today(), isActive= True)
         user.put()
         
         drugs = ["Malarone", "Chloroquine", "Doxycycline", "Mefloquine"]
@@ -295,7 +306,7 @@ class Populate():
 
         user = User(name=users.get_current_user().nickname(), userID=users.get_current_user(), 
                     dob=datetime.datetime(random.randint(1960, 1990),random.randint(1, 12), random.randint(1, 28), 0, 0, 0),
-                     clinic=clin, home='Ireland',  firstSession= datetime.datetime.today(), lastSession= datetime.datetime.today(), isActive = True)
+                     clinic=clin, firstSession= datetime.datetime.today(), lastSession= datetime.datetime.today(), isActive = True)
         user.put()
         
         drugs = ["Malarone", "TDaP", "Harix", "Vivotif Berna"]
@@ -318,7 +329,9 @@ application = webapp.WSGIApplication([
   ('/disease_map', DiseaseMap),
   ('/local_info', localInfo),
   ('/health_news', RSSFeed),
+  ('/article', RSSArticle),
   ('/emerg_numbers', EmergNums),
+  ('/liveMap', LiveMap),
   ('/offline', Offline),
   ('/json/map', JSONMap),
   ('/json/me', JSONMeHandler),

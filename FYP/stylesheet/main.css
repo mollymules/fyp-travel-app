@@ -11,3 +11,46 @@
 .ui-li-static {
 padding: 1px;
 }
+
+#navigation {font-size:0.75em; width:150px;}
+#navigation ul {margin:0px; padding:0px;}
+#navigation li {list-style: none;} 
+
+ul.top-level {background:#666;}
+ul.top-level li {
+ border-bottom: #fff solid;
+ border-top: #fff solid;
+ border-width: 1px;
+}
+
+#navigation h4 {
+ color: #fff;
+ display:block;
+ font-size: 2em;
+ text-align:center;
+ text-decoration:none;
+}
+#navigation label {
+ color: #fff;
+ cursor: pointer;
+ display:block;
+ height:25px;
+ font-size: 1.5em;
+ line-height: 25px;
+ text-indent: 10px;
+ text-decoration:none;
+ width:100%;
+}
+
+#navigation input {
+ display:block;
+ height:25px;
+ line-height: 25px;
+ width:100%;
+ margin: 0.2em 0em 0em 0em;
+}
+
+#navigation li:hover {
+ background: #aa1100;
+ position: relative;
+}

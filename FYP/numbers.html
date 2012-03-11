@@ -1,21 +1,20 @@
 <!DOCTYPE HTML>
-<html manifest="offline.appcache"> 
+<html manifest="mobile/offline.appcache"> 
 <head>
 	<title>Emergency Numbers</title>
 		<meta name="viewport" content="user-scalable=no, width=device-width height=device-height" /> 
 		<link rel="stylesheet" href="mobile/jquery.mobile-1.0.1.min.css" />
 		<script type="text/javascript" src="mobile/jquery-1.7.1.min.js"></script>
 		<script type="text/javascript" src="mobile/jquery.mobile-1.0.1.min.js"></script>
-		<link rel="stylesheet" type="text/css" src="stylesheet/main.css" />
+		<link rel="stylesheet" type="text/css" href="stylesheet/main.css" />
 </head>
 
 <body>
 	
 	<div data-role="page" id="numPage">
 		<script type="text/javascript">
-			$("#numPage").live('pageshow', function() {
+			$("#numPage").bind('pageinit', function() {
 				var loc = localStorage.getItem('location');
-				alert(loc);
 				$.getJSON('/json/numbers?country='+loc,function(data) {
     				if (navigator.onLine){
     					localStorage.setItem("numbers",JSON.stringify(data));
@@ -39,7 +38,7 @@
 			<h4>Emergency Numbers</h4>
 			<div class="ui-btn-left">
 				<a href="/">
-					<img src="images/3Strata_Icon.png" height= "30px" width= "30px"/>
+					<img src="images/3Strata_Icon.png" style="height:2em; width:2em;"/>
 				</a>
 			</div>
 		</div>
@@ -49,61 +48,7 @@
 		</div>
 		
 		<div data-role="footer" data-position="fixed">
-			<h4>Clinic Communication</h4>
-		</div>
-		
-	</div>
-
-	<div data-role="page" id="rssPage" >
-		<script type="text/javascript">
-			$("#rssPage").live('pageshow', function() {
-				var loc = localStorage.getItem('location');
-				alert(loc);
-				$.get("http://healthmap.org/promed2.xml", function(data) {
-    				if (navigator.onLine){
-    					localStorage.setItem("rss",JSON.stringify(data));
-    				}else{
-    		    		data = localStorage.getItem("rss");
-						data = JSON.parse(data);
-    				}
-    			    var $xml = $(data);
-					var rssContainer = $('<ul data-role="listview" data-theme="c" data-dividertheme="d" data-counttheme="e">');
-    			    $xml.find("item").each(function() {
-    			        var $this = $(this),
-    			            item = {
-    			                title: $this.find("title").text(),
-    			                link: $this.find("link").text(),
-    			                description: $this.find("description").text(),
-    			                pubDate: $this.find("pubDate").text(),
-    			                author: $this.find("author").text()
-				        }
-    					rssContainer.append('<li><h2><a href=#article>'+ item.title +'</a></h2></li>');
-    					}
-    				});	
-					rssContainer.append('</ul>');
-					$("#rssList").append(rssContainer).trigger("create");
-					
-				});
-			});
-
-		</script>
-		
-
-		<div data-role="header">
-			<h4>Health News</h4>
-			<div class="ui-btn-left">
-				<a href="/">
-					<img src="images/3Strata_Icon.png" height= "30px" width= "30px"/>
-				</a>
-			</div>
-		</div>
-		
-		<div data-role="content">
-			<div id="rssList"></div>
-		</div>
-		
-		<div data-role="footer" data-position="fixed">
-			<h4>Clinic Communication</h4>
+		<h4></h4>
 		</div>
 		
 	</div>

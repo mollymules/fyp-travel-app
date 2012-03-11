@@ -25,16 +25,9 @@
             				}
             				//Create details div
             				var personContainer = $('<fieldset class="ui-grid-b">');
-            				personContainer.append('<div class="ui-block-a"><p>Name: </p><p>DOB: </p><p>Clinic: </p></div>'); 
+            				personContainer.append('<div class="ui-block-a"><h4>Name: </h4><h4>DOB: </h4><h4>Clinic: </h4></div>'); 
             				personContainer.append('<div class="ui-block-b"><p>' + data.name+ '</p><p>' + data.dob+ '</p><p>' + data.clinic+ '</p></div>');
             				personContainer.append('</fieldset>');
-            				/*var country = localStorage.getItem("location");
-            				var location = '<img src=\'http://chart.apis.google.com/chart?cht=map&chs=140x160&chld='+country+'&chco=909090|FF4040&chtt=Where+You+Are:\'>';
-            				alert(country);
-            				if(country=="Private Address,"){
-            					location = '<img src=\'http://chart.apis.google.com/chart?cht=map&chs=140x160&chld=IE&chco=909090|FF4040&chtt=Where+You+Are:\'>';
-            				}
-            				$("#map").append(location).trigger("create");*/
             				$("#details").replaceWith(personContainer);
             	});
             });
@@ -43,16 +36,57 @@
 			<h4>My Details</h4>
 			<div class="ui-btn-left">
 				<a href="/">
-					<img src="images/3Strata_Icon.png" height= "30px" width= "30px"/>
+					<img src="images/3Strata_Icon.png" style="height:2em; width:2em;"/>
 				</a>
 			</div>
 		</div>
 		<div data-role="content">
 			<div id="details"></div>
-			<div id="map" style="text-align:center;"></div>
+			<h3 style="text-align:center">My Itinerary</h3>
+			<div data-role="collapsible-set">
+				<div data-role="collapsible">
+						<h3>Thailand</h3>
+						<fieldset class="ui-grid-b">
+            				<div class="ui-block-a">
+            					<h4>Arrival: </h4>
+            					<h4>Departure: </h4>
+            				</div> 
+            				<div class="ui-block-b">
+            					<p>1st April</p>
+            					<p>10th April</p>
+            				</div>
+            			</fieldset>
+				</div>
+				<div data-role="collapsible">
+						<h3>Brunei</h3>
+						<fieldset class="ui-grid-b">
+            				<div class="ui-block-a">
+            					<h4>Arrival: </h4>
+            					<h4>Departure: </h4>
+            				</div> 
+            				<div class="ui-block-b">
+            					<p>11st April</p>
+            					<p>18th April</p>
+            				</div>
+            			</fieldset>
+				</div>
+					<div data-role="collapsible">
+						<h3>India</h3>
+						<fieldset class="ui-grid-b">
+            				<div class="ui-block-a">
+            					<h4>Arrival: </h4>
+            					<h4>Departure: </h4>
+            				</div> 
+            				<div class="ui-block-b">
+            					<p>19st April</p>
+            					<p>28th April</p>
+            				</div>
+            			</fieldset>
+				</div>
+			</div>
 		</div>
 		<div data-role="footer" data-position="fixed">
-			<h4>Clinic Communication</h4>
+			<h4></h4>
 		</div>
 	</div>
 </body>

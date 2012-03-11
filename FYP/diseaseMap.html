@@ -1,24 +1,24 @@
 <!DOCTYPE HTML>
-<html> 
+<html manifest="mobile/offline.appcache"> 
 <head>
 	<title>Disease Map</title>
-	<meta name="viewport" content="user-scalable=no, width=device-width height=device-height" />
-	<meta http-equiv="Cache-control" content="no-store">
-	<meta http-equiv="Cache-control" content="no-cache">
-	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.css" />
-	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-	<script src="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.js"></script>
-	<link rel="stylesheet" href="/stylesheet/main.css" type="text/css" />
+	<meta name="viewport" content="user-scalable=no, width=device-width height=device-height" /> 
+	<link rel="stylesheet" href="mobile/jquery.mobile-1.0.1.min.css" />
+	<script type="text/javascript" src="mobile/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="mobile/jquery.mobile-1.0.1.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="stylesheet/main.css" />
 </head>
 
 <body>
 <div data-role="page" id="mapPage" >
-		<script type="text/javascript">
+	<script type="text/javascript">
 		var disContainer = "";
-			$("#mapPage").live('pageshow', function() {
-				var dis = localStorage.getItem('disease');
+		$("#mapPage").bind('pageinit', function() {
+			var dis = localStorage.getItem('disease');
+			if (navigator.onLine){
 				$.getJSON('/json/map?disease='+dis,function(data) {
-					disContainer += '<img src=\'http://chart.apis.google.com/chart?cht=map&chs=320x160&chld=';
+					disContainer += '<img style="height:20em; width:20em; margin: 1em, 1em, 1em, 1em;"' 
+					+'src=\'http://chart.apis.google.com/chart?cht=map&chs=400x400&chld=';
 					for ( var i = 0; i < data.length; i++) {
 						if(i == 0){
 							disContainer += (data[i]);
@@ -29,27 +29,33 @@
 					disContainer += '&chco=909090|FF4040\'>';
 					$("#map").replaceWith(disContainer).trigger("refresh");
 				});
-			});	
-			
-			
-		</script>
+			}
+			else{
+				$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'>"+
+				"<h1>An internet connection is needed for this feature.</h1></div>")
+				.css({ "display": "block", "opacity": 0.96, "top": $(window).scrollTop() + 100 })
+				.appendTo( $.mobile.pageContainer ).delay( 4000 ).fadeOut( 1000, function(){
+					$(this).remove();
+				});
+			}
+		});	
+	</script>
 		
-
 		<div data-role="header">
 			<h4>Disease Map</h4>
 			<div class="ui-btn-left">
 				<a href="/">
-					<img src="images/3Strata_Icon.png" height= "30px" width= "30px"/>
+					<img src="images/3Strata_Icon.png" style="height:2em; width:2em;"/>
 				</a>
 			</div>
 		</div>
 		
-		<div data-role="content">
-			<div style="text-align:center;"><img id="map"></div>
+		<div data-role="content" style="text-align:center;">
+			<img id="map">
 		</div>
 		
 		<div data-role="footer" data-position="fixed">
-			<h4>Clinic Communication</h4>
+		<h4></h4>
 		</div>
 		
 </div>

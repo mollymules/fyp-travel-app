@@ -3,25 +3,50 @@
 
 <head>
 	<title>User Logins</title>
-	<meta name="viewport" content="user-scalable=no, width=device-width height=device-height" />
-	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.css" />
-	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-	<script src="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.js"></script>
-	<link rel="stylesheet" href="/stylesheet/main.css" type="text/css" />
+		<meta name="viewport" content="user-scalable=no, width=device-width height=device-height" /> 
+		<link rel="stylesheet" href="../mobile/jquery.mobile-1.0.1.min.css" />
+		<script type="text/javascript" src="../mobile/jquery-1.7.1.min.js"></script>
+		<script type="text/javascript" src="../mobile/jquery.mobile-1.0.1.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="../stylesheet/main.css" />
 </head>
 
 <body>
 <div data-role="page" id="chartPage" >
 		<script type="text/javascript">
-		var chartImg = "";
+		
+		$("#chartPage").live('pageshow', function() {
+			$('input').live('click', function(event) {
+				var chart = $("input[name=format]:checked").val();
+				var value = $("input[name=time]:checked").val();
+					if(value=="Weekly"){
+						getChart("7", chart);
+					}
+					if(value=="Daily"){
+						getChart("1", chart);
+					}
+					if(value=="Monthly"){
+						getChart("31", chart);
+					}
+					if(value=="Yearly"){
+						getChart("365", chart);
+					}
+			});
+		});
+		
+
 		$("#chartPage").bind('pageinit', function() {
-				$.getJSON('/json/stats',function(data) {
-					chartImg += '<img src=\'http://chart.apis.google.com/chart?';
-					var countries = 'chxl=1:';
-					var values = '&chd=t:';
-					var places = '&chxp=0';
-					var max = 0
-					var i = 0;
+				getChart("365", "Chart");
+		});
+		
+		function getChart(days, type){
+			$.getJSON('/json/stats?time='+days, function(data) {
+				var chartImg = '<div id ="chart" style="text-align:center; height: 80%; float: inline;"><img src=\'http://chart.apis.google.com/chart?';
+				var countries = 'chxl=1:';
+				var values = '&chd=t:';
+				var places = '&chxp=0';
+				var max = 0;
+				var i = 0;
+				if(type == "Chart"){
 					$.each(data, function(key, val) {
 						if(i == 0){
 							countries += '|'+key;
@@ -37,29 +62,68 @@
 						}
 						i++;
 					});
-					chartImg +=countries+'&chxr=0,0,'+max+'&chxt=x,y&chbh=a,4,7&chs=280x320&cht=bhs&chco=A2C180&chds=0,'+max+
-					values+ '&chdlp=l&chtt=User+Login+by+Country\'>';
-					$("#chart").append(chartImg).trigger("create");
-				});
-			});			
+					chartImg +=countries+'&chxr=0,0,'+max+'&chxt=x,y&chbh=a,4,7&chs=440x220&cht=bhs&chco=A2C180&chds=0,'+max+
+					values+ '&chdlp=l&chtt=User+Login+by+Country\'></div>';
+				}
+				else{
+					var max = 0;
+					var i = 0;
+					$.each(data, function(key, val) {
+						if(val > max){
+							max = val;
+						}
+						i++;
+					});
+					var multiply = 100/max;
+					var countries = '&chld=';
+					var values = '&chd=t:';
+					i = 0;
+					$.each(data, function(key, val) {
+						if(i == 0){
+							countries += key;
+							values += val*multiply;
+						}else{
+							countries += key;
+							values += ','+ val*multiply;
+						}
+						i++;
+					});	
+					chartImg+='chf=bg,s,EAF7FE&chs=440x220&cht=t&chco=F5F5F5,EDF0D4,6C9642,13390A'+countries+values+'&chtm=asia\'></div>';	
+				}
+				$("#chart").replaceWith(chartImg).trigger("refresh");
+			});
+		}
 		</script>
+
 		<div data-role="header">
 			<h4>User Logins</h4>
 			<div class="ui-btn-left">
 				<a href="/">
-					<img src="images/3Strata_Icon.png" height= "30px" width= "30px"/>
+					<img src="../images/3Strata_Icon.png" style="height:2em; width:2em;"/>
 				</a>
 			</div>
 		</div>
 		
 		<div data-role="content">
-			<div id="chart" style="text-align:center; height: 80%;"></div>
+			<div id="navigation" style="float: left;">
+    			<ul class="top-level">
+        			<li><h4>Time</h4></li>
+        			<li><input type="radio" name="time" value="Daily"><label>Daily</label></li>
+        			<li><input type="radio" name="time" value="Weekly"><label>Weekly</label></li>
+        			<li><input type="radio" name="time" value="Monthly"><label>Monthly</label></li>
+        			<li><input type="radio" name="time" value="Yearly" checked><label>Yearly</label></li>
+    			</ul>
+    			<br/>
+    			<br/>
+    			<ul class="top-level">
+        			<li><h4>Display</h4></li>
+        			<li><input type="radio" name="format" value="Map"><label>Map</label></li>
+        			<li><input type="radio" name="format" value="Chart" checked><label>Bar Chart</label></li>
+    			</ul>
+			</div>
+			
+			<div id="chart" style="text-align:center; height: 80%; float: inline;"></div>
 		</div>
-		
-		<div data-role="footer" data-position="fixed">
-			<h4>Clinic Communication</h4>
-		</div>
-		
 </div>
 </body>
 </html>

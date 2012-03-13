@@ -7,6 +7,12 @@
 	margin-left: 20px;
 }
 
+.article img{
+	height: 2em;
+	width: 2em;
+}
+
+
 .ui-li-divider, 
 .ui-li-static {
 padding: 1px;

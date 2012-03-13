@@ -1,36 +1,368 @@
 <!DOCTYPE HTML>
 <html manifest="mobile/offline.appcache"> 
 	<head>
-		<title>Home</title>
-	    <meta name="viewport" content="user-scalable=no, width=device-width height=device-height" /> 
+		<title>Travel Application</title>
+		<meta name="viewport" content="user-scalable=no, width=device-width height=device-height" /> 
 		<link rel="stylesheet" href="mobile/jquery.mobile-1.0.1.min.css" />
 		<script type="text/javascript" src="mobile/jquery-1.7.1.min.js"></script>
 		<script type="text/javascript" src="mobile/jquery.mobile-1.0.1.min.js"></script>
 		<link rel="stylesheet" type="text/css" href="stylesheet/main.css" />
-		
 	</head>
-  	<body>
+	<body>
+		<script type="text/javascript">
+			$(document ).bind( "pageloadfailed", function(event, data){
+				event.preventDefault();
+				$.mobile.loadPage("#offline");
+				var page = $("#offline");
+				data.deferred.resolve( data.absUrl, data.options, page );
+			});
+		</script>
+		
 		<div data-role="page">
-		<script type="text/javascript">localStorage.setItem("location",{{location}});</script>
-  			<div data-role="header">
-  				<h4>Home Page</h4>
-  				<div class="ui-btn-left">
-            		<a href="/" style="margin-bottom: 0.4em">
-                		<img src="images/3Strata_Icon.png" style="height:2em; width:2em;"/>
-            		</a>
-        		</div>  
-  			</div>
+			<script type="text/javascript">
+				localStorage.setItem("location",{{location}});</script>
+				<div data-role="header">
+					<h4>Home Page</h4>
+					<div class="ui-btn-left">
+						<a href="/" style="margin-bottom: 0.4em">
+							<img src="images/3Strata_Icon.png" style="height:2em; width:2em;"/>
+						</a>
+					</div>
+				</div>
 			<div data-role="content">
-				<div style="text-align:center; height:35%; width:100%;" ><img src ="images/Logo1.png" style="text-align:center; height:90%; width:80%; margin-bottom: 1em;"></div>
+				<div style="text-align:center; height:35%; width:100%;" >
+					<img src ="images/Logo1.png" style="text-align:center; height:90%; width:80%; margin-bottom: 1em;">
+				</div>
 				<div style="height:50%; width:100%;">
-					<a href="/profile" data-role="button">My Itinerary</a>
-					<a href="/local_info" data-role="button">My Area</a>
-					<a href="/vaccine_list" data-role="button">My Yellow Book</a>
+					<a href="#profilePage" data-role="button">My Itinerary</a>
+					<a href="#localPage" data-role="button">My Area</a>
+					<a href="#vaccPage" data-role="button">My Yellow Book</a>
 				</div>
 			</div>
 			<div data-role="footer" data-position="fixed">
-			<h4></h4>
+				<h4></h4>
 			</div>
-  		</div>
+		</div>
+		
+		<div data-role="page" id="profilePage" >
+			<script type="text/javascript">
+				$("#profilePage").live('pageinit', function() {
+					$.getJSON('/json/me', function(data) {
+						if (navigator.onLine){
+							localStorage.setItem("profileInfo",JSON.stringify(data));
+						}else{
+							data = localStorage.getItem("profileInfo");
+							data = JSON.parse(data);
+						}
+						var personContainer = $('<fieldset class="ui-grid-b">');
+						personContainer.append('<div class="ui-block-a"><h4>Name: </h4><h4>DOB: </h4><h4>Clinic: </h4></div>'); 
+						personContainer.append('<div class="ui-block-b"><p>' + data.name+ '</p><p>' + data.dob+ '</p><p>' + data.clinic+ '</p></div>');
+						personContainer.append('</fieldset>');
+						$("#details").replaceWith(personContainer);
+					});
+				});
+			</script>
+			<div data-role="header">
+				<h4>My Details</h4>
+				<div class="ui-btn-left">
+					<a href="/">
+						<img src="images/3Strata_Icon.png" style="height:2em; width:2em;"/>
+					</a>
+				</div>
+			</div>
+			<div data-role="content">
+				<div id="details"></div>
+				<h3 style="text-align:center">My Itinerary</h3>
+				<div data-role="collapsible-set">
+					<div data-role="collapsible">
+						<h3>Thailand</h3>
+						<fieldset class="ui-grid-b">
+							<div class="ui-block-a">
+								<h4>Arrival: </h4>
+								<h4>Departure: </h4>
+							</div> 
+							<div class="ui-block-b">
+								<p>1st April</p>
+								<p>10th April</p>
+							</div>
+						</fieldset>
+					</div>
+					<div data-role="collapsible">
+							<h3>Brunei</h3>
+							<fieldset class="ui-grid-b">
+								<div class="ui-block-a">
+									<h4>Arrival: </h4>
+									<h4>Departure: </h4>
+								</div> 
+								<div class="ui-block-b">
+									<p>11st April</p>
+									<p>18th April</p>
+								</div>
+							</fieldset>
+					</div>
+					<div data-role="collapsible">
+						<h3>India</h3>
+						<fieldset class="ui-grid-b">
+							<div class="ui-block-a">
+								<h4>Arrival: </h4>
+								<h4>Departure: </h4>
+							</div> 
+							<div class="ui-block-b">
+								<p>19st April</p>
+								<p>28th April</p>
+							</div>
+						</fieldset>
+					</div>
+				</div>
+			</div>
+			<div data-role="footer" data-position="fixed">
+				<h4></h4>
+			</div>
+		</div>
+	
+		<div data-role="page" id="vaccPage" >
+			<script type="text/javascript">
+				$("#vaccPage").bind('pageinit', function() {
+					$.getJSON('/json/vaccines', function(data) {
+						if (navigator.onLine){
+							localStorage.setItem("vaccines",JSON.stringify(data));
+						}else{
+							data = localStorage.getItem("vaccines");
+							data = JSON.parse(data);
+						}
+						var vacContainer = $('<div data-role="collapsible-set">');
+						for ( var i = 0; i < data.length; i++) {
+							vacContainer.append('<div data-role="collapsible"div data-role="collapsible">'
+							+'<h3>'+ data[i].vaccine
+							+ '</h3><h4>Date Given: '+ data[i].dateGiven
+							+ '</h4><h4>Date Expired: '+ data[i].dateExpired
+							+ '</h4></div>');
+						}
+						vacContainer.append('</div>');
+						$("#vacList").append(vacContainer).trigger("create");
+					});
+				});
+			</script>
+			<div data-role="header">
+				<h4>Yellow Book</h4>
+				<div class="ui-btn-left">
+					<a href="/">
+						<img src="images/3Strata_Icon.png" style="height:2em; width:2em;"/>
+					</a>
+				</div>
+			</div>
+			<div data-role="content">
+				<div data-role="collapsible-set" id="vacList"></div>
+				<a href="#disPage" data-role="button">Disease Coverage</a>
+			</div>
+			<div data-role="footer" data-position="fixed">
+				<h4></h4>
+			</div>
+		</div>
+	
+		<div data-role="page" id="disPage" >
+			<script type="text/javascript">
+			var disease;
+				$("#disPage").live('pageshow', function() {
+					$('#button').live('click', function() {
+						var selected = $(this).text();
+						localStorage.setItem("disease",selected);
+					});
+				});
+				$("#disPage").bind('pageinit', function() {
+					$.getJSON('/json/diseases',function(data) {
+						if (navigator.onLine){
+							localStorage.setItem("diseases",JSON.stringify(data));
+						}else{
+							data = localStorage.getItem("diseases");
+							data = JSON.parse(data);
+						}
+						var disContainer = $('<div id="disList">');
+						for ( var i = 0; i < data.length; i++) {
+							disContainer.append('<a href="/disease_map" data-role="button" id="button">'+ data[i]+ '</a>');
+						}
+						disContainer.append('</div>');
+						$("#disList").append(disContainer).trigger("create");
+					});
+				});
+			</script>
+			<div data-role="header">
+				<h4>Disease Protection</h4>
+				<div class="ui-btn-left">
+					<a href="/">
+						<img src="images/3Strata_Icon.png" style="height:2em; width:2em;"/>
+					</a>
+				</div>
+			</div>
+			<div data-role="content">
+				<div id="disList" data-role="listview" class="ui-listview"></div>
+			</div>
+			<div data-role="footer" data-position="fixed">
+				<h4></h4>
+			</div>
+		</div>
+	
+		<div data-role="page" id="localPage" >
+			<div data-role="header">
+				<h4>Local Information</h4>
+				<div class="ui-btn-left">
+					<a href="/">
+						<img src="images/3Strata_Icon.png" style="height:2em; width:2em;"/>
+					</a>
+				</div>
+			</div>
+			<div data-role="content">
+				<a href="#numPage" data-role="button">Emergency Numbers</a>
+				<a href="#rssPage" data-role="button">Health News</a>
+			</div>
+			<div data-role="footer" data-position="fixed">
+				<h4></h4>
+			</div>
+		</div>
+		
+		<div data-role="page" id="numPage">
+			<script type="text/javascript">
+				$("#numPage").bind('pageinit', function() {
+					var loc = localStorage.getItem('location');
+					$.getJSON('/json/numbers?country='+loc,function(data) {
+						if (navigator.onLine){
+							localStorage.setItem("numbers",JSON.stringify(data));
+						}else{
+							data = localStorage.getItem("numbers");
+							data = JSON.parse(data);
+						}
+						var numContainer = $('<ul data-role="listview">');
+						numContainer.append('<li><img src="images/ambulance.png" height="75em" width="75em"/><h3>'+ data.ambulance+ '</h3></li>');
+						numContainer.append('<li><img src="images/fire.png" height="75em" width="75em"/><h3>'+ data.fire+ '</h3></li>');
+						numContainer.append('<li><img src="images/police.png" height="75em" width="75em"/><h3>'+ data.police+ '</h3></li>');
+						numContainer.append('</ul>');
+						$("#numList").append(numContainer).trigger("create");
+					});
+				});
+			</script>
+			<div data-role="header">
+				<h4>Emergency Numbers</h4>
+				<div class="ui-btn-left">
+					<a href="/">
+						<img src="images/3Strata_Icon.png" style="height:2em; width:2em;"/>
+					</a>
+				</div>
+			</div>
+			<div data-role="content">
+				<div id="numList"></div>
+			</div>
+			<div data-role="footer" data-position="fixed">
+				<h4></h4>
+			</div>	
+		</div>
+		<div data-role="page" id="rssPage" >
+			<script type="text/javascript">
+			$("#rssPage").live('pageshow', function() {
+				$('a').live('click', function(event) {
+					var selected = event.target.id;
+					localStorage.setItem("storyChoice",selected);
+				});
+			});
+			$("#rssPage").bind('pageinit', function(){
+				if (navigator.onLine){
+					var loc = localStorage.getItem('location');
+					$.get("http://pipes.yahoo.com/pipes/pipe.run?_id=bcad4e134d27cce68c67baf7750c07b3&_render=json", function(data) {
+						localStorage.setItem("rss",JSON.stringify(data));
+						var rssContainer = $('<ul data-role="listview">');
+						for (i=0;i<data.count;i++) {
+							rssContainer.append('<li style=" font-size: 10px;"><a href="#articlePage" id='+i+'>'+ data.value.items[i].title +'</a></li>');
+						}
+						rssContainer.append('</ul>');
+						$("#rssList").append(rssContainer).trigger("create");
+					});
+				}
+				else{
+					$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'>"+
+					"<h1>An internet connection is needed for this feature.</h1></div>")
+					.css({ "display": "block", "opacity": 0.96, "top": $(window).scrollTop() + 100 })
+					.appendTo( $.mobile.pageContainer ).delay( 4000 ).fadeOut( 1000, function(){
+						$(this).remove();
+					});
+				}
+			});
+			
+			</script>
+		<div data-role="header">
+			<h4>Health News</h4>
+			<div class="ui-btn-left">
+				<a href="/">
+					<img src="images/3Strata_Icon.png" style="height:2em; width:2em;"/>
+				</a>
+			</div>
+		</div>
+		<div data-role="content">
+			<div id="rssList"></div>
+		</div>
+		
+		<div data-role="footer" data-position="fixed">
+		<h4></h4>
+		</div>
+		
+	</div>
+	<div data-role="page" id="articlePage" class ="article">
+		<script type="text/javascript">
+			$("#articlePage").live('pageshow', function() {
+				var story = localStorage.getItem('storyChoice');
+				story = JSON.parse(story);
+				var feed = localStorage.getItem('rss');
+				feed = JSON.parse(feed);
+				story = feed.value.items[story];
+				var articleContainer = '<div id ="article"><h2>'+story.title+'</h2>';
+				articleContainer += '<p>'+story.description+'</p></div>';
+				var link = '<a href="'+story.link+'" data-role="button" target="_blank" rel="external" style="width:80%; border: none;" '+
+				'id="footer" class="ui-btn ui-btn-corner-all ui-shadow ui-btn-up-a"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Full Article</span></span></a>';
+				$("#article").replaceWith(articleContainer).trigger("create");
+				$("#footer").replaceWith(link).trigger("create");
+			});	
+		</script>
+		
+
+		<div data-role="header">
+			<h4>Health Article</h4>
+			<div class="ui-btn-left">
+				<a href="/">
+					<img src="images/3Strata_Icon.png" style="height:2em; width:2em;"/>
+				</a>
+			</div>
+		</div>
+		
+		<div data-role="content">
+			<div id ="article"></div>
+		</div>
+		
+		<div data-role="footer" class="ui-bar" data-position="fixed">
+			<h4 style="text-align:center; margin-right:3em; margin-left: 1em;"><a href="index.html" data-role="button" style="width:80%; border: none;" id="footer">Full Article</a></h4>
+		</div>
+</div>
+<div data-role="page" id="offline" >
+	<script type="text/javascript">
+	$("#offline").live('pageshow', function() {
+		$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'>"+
+					"<h1>An internet connection is needed for this feature.</h1></div>")
+					.css({ "display": "block", "opacity": 0.96, "top": $(window).scrollTop() + 100 })
+					.appendTo( $.mobile.pageContainer ).delay( 4000 ).fadeOut( 1000, function(){
+						$(this).remove();
+					});
+	});
+	</script>
+		<div data-role="header">
+			<h4>Offline</h4>
+			<div class="ui-btn-left">
+				<a href="/">
+					<img src="images/3Strata_Icon.png" style="height:2em; width:2em;"/>
+				</a>
+			</div>
+		</div>
+		<div data-role="content">
+		</div>
+		<div data-role="footer" data-position="fixed">
+		<h4></h4>
+		</div>
+	</div>
   	</body>
 </html>

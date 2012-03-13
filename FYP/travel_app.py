@@ -82,59 +82,13 @@ class MainPage(webapp.RequestHandler):
                 u.isActive = True
                 u.put()
 
-class Profile(webapp.RequestHandler):
-    def get(self):
-        path = os.path.join(os.path.dirname(__file__), 'profile.html')
-        self.response.out.write(template.render( path, {} ) )
-
-class VaccineList(webapp.RequestHandler):
-    def get(self):
-        template_values = {}
-        path = os.path.join(os.path.dirname(__file__), 'vaccineList.html')
-        self.response.out.write(template.render(path, template_values))
-
-class DiseaseList(webapp.RequestHandler):
-    def get(self):
-        template_values = {}
-        path = os.path.join(os.path.dirname(__file__), 'diseaseList.html')
-        self.response.out.write(template.render(path, template_values))
-        
 class DiseaseMap(webapp.RequestHandler):
     def get(self):
         template_values = {}
         path = os.path.join(os.path.dirname(__file__), 'diseaseMap.html')
         self.response.out.write(template.render(path, template_values))
         
-class localInfo(webapp.RequestHandler):
-    def get(self):
-        path = os.path.join(os.path.dirname(__file__), 'localInfo.html')
-        self.response.out.write(template.render(path, {}))
 
-class EmergNums(webapp.RequestHandler):
-    def get(self):
-        path = os.path.join(os.path.dirname(__file__), 'numbers.html')
-        self.response.out.write(template.render(path, {}))
-
-class RSSFeed(webapp.RequestHandler):
-    def get(self):
-        path = os.path.join(os.path.dirname(__file__), 'rssFeed.html')
-        self.response.out.write(template.render(path, {}))
-
-class RSSArticle(webapp.RequestHandler):
-    def get(self):
-        path = os.path.join(os.path.dirname(__file__), 'rssArticle.html')
-        self.response.out.write(template.render(path, {}))
-        
-class LiveMap(webapp.RequestHandler):
-    def get(self):
-        path = os.path.join(os.path.dirname(__file__), 'liveMap.html')
-        self.response.out.write(template.render(path, {}))
-
-class Offline(webapp.RequestHandler):
-    def get(self):
-        path = os.path.join(os.path.dirname(__file__), 'offline.html')
-        self.response.out.write(template.render(path, {}))
-        
 class statPage(webapp.RequestHandler):
     def get(self):
         template_values = {}
@@ -157,8 +111,8 @@ class JSONMeHandler(webapp.RequestHandler):
         date = date[2]+"/"+date[1]+"/"+date[0]
         return date
         
-VacList = []
 class JSONVacHandler(webapp.RequestHandler):
+    VacList = []
     def get(self):
         vaccine = db.GqlQuery("SELECT * FROM VaccineTaken WHERE patient = :user ORDER BY dateExpired ASC",
                                user = users.get_current_user())
@@ -323,16 +277,7 @@ class Populate():
 application = webapp.WSGIApplication([
   ('/POP', Populate),
   ('/', MainPage),
-  ('/profile', Profile),
-  ('/vaccine_list', VaccineList),
-  ('/disease_list', DiseaseList),
   ('/disease_map', DiseaseMap),
-  ('/local_info', localInfo),
-  ('/health_news', RSSFeed),
-  ('/article', RSSArticle),
-  ('/emerg_numbers', EmergNums),
-  ('/liveMap', LiveMap),
-  ('/offline', Offline),
   ('/json/map', JSONMap),
   ('/json/me', JSONMeHandler),
   ('/json/vaccines', JSONVacHandler),
